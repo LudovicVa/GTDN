@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<lang value="en">
+	<!-- Actions -->
+	<item id="action_listing">List of merchants</item>
+		
+	<!-- General -->
+	<item id="search">Search</item>
+	<item id="nickname">Nickname</item>
+	<item id="password">Password</item>
+	<item id="email">Email</item>
+	<item id="firstname">Firstname</item>
+	<item id="lastname">Lastname</item>
+	<item id="register_time">Registering time</item>
+	<item id="last_connection">Last connection</item>
+	<item id="edit">Edit</item>
+	<item id="delete">Delete</item>
+	<item id="cancel">Cancel</item>
+</lang>

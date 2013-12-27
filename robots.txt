@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /libraries
+Disallow: /helpers
+Disallow: /cache
+Disallow: /system
+

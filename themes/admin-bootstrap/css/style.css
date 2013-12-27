@@ -1,0 +1,18 @@
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+
+a.black {
+	color: #333;
+}
+
+.link {
+	cursor: pointer;
+}
+
+@media (min-width: 768px) {
+	.container {
+		width: 100%;
+	}
+}
