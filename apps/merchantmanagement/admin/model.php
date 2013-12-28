@@ -28,14 +28,16 @@ class MerchantManagementAdminModel extends UserAdminModel {
 		$this->db->declareTable('merchants_emails');
 	}
 	
+//----------------------------------------------------------------------------------------
+//MERCHANTS OPERATION
 	public function getMerchants($from, $number, $order = 'nickname', $sens='ASC') {
 		$prep = $this->db->prepare('
 			SELECT users.id, nickname, email, firstname, lastname, country, lang, groupe, 
-				users.access, valid, ip, last_activity, users.created_date, id_merchant, name, contact_email 
+				users.access, valid, ip, last_activity, users.created_date, id_merchant, name 
 			FROM users, merchants
 			WHERE id_user = users.id
 			AND groupe = ' . $this->GROUP . '
-			ORDER BY users.'.$order.' '.$sens.'
+			ORDER BY '.$order.' '.$sens.'
 			'.($number > 0 ? 'LIMIT :start, :number' : '')
 		);
 		$prep->bindParam(':start', $from, PDO::PARAM_INT);
@@ -90,8 +92,63 @@ class MerchantManagementAdminModel extends UserAdminModel {
 		}	
 	}
 	
+	public function deleteMerchant($merchant_id) {
+		$prep = $this->db->prepare('
+			SELECT id_user
+			FROM merchants
+			WHERE id_merchant = :id'
+		);
+		$prep->bindParam(':id', $merchant_id);
+		if(!$prep->execute()) {	return false; }
+		$user_id = $prep->fetchAll(PDO::FETCH_ASSOC);
+		if(count($user_id) != 1) { return false; }
+		$user_id = $user_id[0]['id_user'];
+	
+		$prep = $this->db->prepare('DELETE FROM merchants WHERE id_merchant = :id');
+		$prep->bindParam(':id', $merchant_id);
+		$prep_email = $this->db->prepare('DELETE FROM merchants_emails WHERE id_merchant = :id');
+		$prep_email->bindParam(':id', $merchant_id);
+		$prep_addresses = $this->db->prepare('DELETE FROM merchants_addresses WHERE id_merchant = :id');
+		$prep_addresses->bindParam(':id', $merchant_id);
+		
+		return $prep_addresses->execute() && $prep_email->execute() && $prep->execute() && $this->deleteUser($user_id);
+	}
+	
+	public function createMerchant($data) {	
+		$data['groupe'] = $this->GROUP;
+		$user_id = $this->createUser($data);
+		
+		$prep = $this->db->prepare('
+			INSERT INTO merchants(id_user, name)
+			VALUES (:id_user, :name);
+		');
+		$prep->bindParam(':id_user', $user_id);
+		$name = $data['name'];
+		$prep->bindParam(':name', $name);
+		if($prep->execute()) {	
+			return $this->db->lastInsertId(); 
+		}
+		return false;
+	}
+	
 //----------------------------------------------------------------------------------------------------------------------
 //CONTACT OPERATIONS ---------------------------------------------------------------------------------------------------
+	public function getContact($contact_id) {
+		$prep = $this->db->prepare('SELECT * FROM merchants_emails WHERE id_email = :id'); 
+		$prep->bindParam(':id', $contact_id);
+		
+		if(!$prep->execute()) {
+			return false;
+		}
+		
+		$contact = $prep->fetchAll(PDO::FETCH_ASSOC);
+		if(count($contact) == 1) {
+			return $contact[0];
+		}
+		
+		return false;
+	}
+	
 	public function updateContactEmail($email_id, $email) {
 		$prep = $this->db->prepare('UPDATE merchants_emails SET email=:email WHERE id_email = :id_email');
 		$prep->bindParam(':id_email', $email_id);
@@ -118,15 +175,38 @@ class MerchantManagementAdminModel extends UserAdminModel {
 		$prep->bindParam(':email', $email);
 		try {
 			$prep->execute();
-			$id = $this->db->prepare('SELECT LAST_INSERT_ID()')->execute();
+			$id = $this->db->lastInsertId();
 			return $id;
 		} catch (PDOException $e) {
 			return -1;
 		}
 	}
 	
+	public function deleteContact($email_id) {
+		$prep = $this->db->prepare('DELETE FROM merchants_emails WHERE id_email = :id'); 
+		$prep->bindParam(':id', $email_id);
+		
+		return $prep->execute();
+	}
+	
 //----------------------------------------------------------------------------------------------------------------------
 //ADDRESS OPERATIONS ---------------------------------------------------------------------------------------------------
+	public function getAddress($address_id) {
+		$prep = $this->db->prepare('SELECT * FROM merchants_addresses WHERE id_address = :id'); 
+		$prep->bindParam(':id', $address_id);
+		
+		if(!$prep->execute()) {
+			return false;
+		}
+		
+		$address = $prep->fetchAll(PDO::FETCH_ASSOC);
+		if(count($address) == 1) {
+			return $address[0];
+		}
+		
+		return false;
+	}
+	
 	public function updateAddressName($address_id, $name) {
 		$prep = $this->db->prepare('UPDATE merchants_addresses SET address_name=:name WHERE id_address = :id_address');
 		$prep->bindParam(':id_address', $address_id);
@@ -170,8 +250,15 @@ class MerchantManagementAdminModel extends UserAdminModel {
 			return false;
 		}
 		
-		$id = $this->db->prepare('SELECT LAST_INSERT_ID()')->execute();
+		$id = $this->db->lastInsertId();
 		return $id;
+	}
+	
+	public function deleteAddress($address_id) {
+		$prep = $this->db->prepare('DELETE FROM merchants_addresses WHERE id_address = :id'); 
+		$prep->bindParam(':id', $address_id);
+		
+		return $prep->execute();
 	}
 }
 

@@ -1,37 +1,58 @@
-<script type="text/javascript" src="/libraries/requirejs/require.js"></script>
 <div class="wity-app wity-app-user wity-action-listing">
 	<div class="row">
-		<div class="col-md-12">						
+		<div class="col-md-12">		
+			<div class="alert fade in" style="display:none"></div>	
+			<div class="modal fade" id="confirmation_window" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">{lang confirmation_title}</h4>
+				  </div>
+				  <div class="modal-body">
+					{lang confirmation_body}
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">{lang cancel}</button>
+					<button type="button" id="confirm" class="btn btn-primary" data-dismiss="modal">{lang confirm}</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			</div>			
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th><a href="/admin/merchantmanagement/listing/id-{$id_sort}/{$subURL}"><i class="{$id_class}"></i> #</a></th>
-						<th><a href="/admin/merchantmanagement/listing/nickname-{$nickname_sort}/{$subURL}"><i class="{$nickname_class}"></i> {lang nickname}</a></th>
-						<th><a href="/admin/merchantmanagement/listing/email-{$nickname_sort}/{$subURL}"><i class="{$nickname_class}"></i> {lang email}</a></th>
-						<th><a href="/admin/merchantmanagement/listing/created_date-{$created_date_sort}/{$subURL}"><i class="{$created_date_class}"></i> {lang register_time}</a></th>
-						<th><a href="/admin/merchantmanagement/listing/last_activity-{$last_activity_sort}/{$subURL}"><i class="{$last_activity_class}"></i> {lang last_connection}</a></th>
-						<th>Actions</th>
+						<th width="1%">#</th>
+						<th width="15%"><a href="/admin/merchantmanagement/listing/nickname-{$nickname_sort}/"><i class="{$nickname_class}"></i> {lang nickname}</a></th>
+						<th><a href="/admin/merchantmanagement/listing/name-{$name_sort}/"><i class="{$name_class}"></i> {lang name}</a></th>
+						<th width="20%"><a href="/admin/merchantmanagement/listing/email-{$email_sort}/"><i class="{$email_class}"></i> {lang email}</a></th>
+						<th width="15%">Password</th>
+						<th colspan="2" width="17%"><a href="/admin/merchantmanagement/listing/last_activity-{$last_activity_sort}/{$subURL}"><i class="{$last_activity_class}"></i> {lang last_connection}</a></th>
 					</tr>
 				</thead>
 				<tbody>
 					{for $count, $user in $users}
-					<tr class="{if empty({$user.addresses})} danger{/if}">
+					<tr>
 						<td><span data-toggle="collapse" data-target="#row{$user.id}" class="black accordion-toggle" title="{lang edit}"><i class="glyphicon glyphicon-plus"></i></span></td>
 						<td><strong>
-							<a href="#" class="editable-data" data-name="name" data-type="text" data-pk="{$user.id_merchant}" data-url="/admin/merchantmanagement/edit/">	
+							<a href="#" class="editable-data" data-name="nickname" data-type="text" data-pk="{$user.id}" data-url="/admin/merchantmanagement/edit/"  data-verif="required">	
+							{$user.nickname}
+							</a>
+						</strong></td>
+						<td><strong>
+							<a href="#" class="editable-data" data-name="name" data-type="text" data-pk="{$user.id_merchant}" data-url="/admin/merchantmanagement/edit/"  data-verif="required">	
 							{$user.name}
 							</a>
 						</strong></td>
 						<td>
-							<a href="#" class="editable-data" data-name="email" data-type="text" data-pk="{$user.id}" data-url="/admin/merchantmanagement/edit/">	
+							<a href="#" class="editable-data" data-name="email" data-type="text" data-pk="{$user.id}" data-url="/admin/merchantmanagement/edit/"  data-verif="email">	
 							{$user.email}
 							</a>
 						</td>
-						<td>{$user.created_date}</td>
+						<td>
+							<a href="#" class="editable-password" data-type="password" data-name="password" data-url="/admin/merchantmanagement/edit/" data-verif="password"></a>
+						</td>
 						<td>{$user.last_activity}</td>
 						<td>
-							<a href="/admin/user/edit/{$user.id}" class="black" title="{lang edit}"><i class="glyphicon glyphicon-edit"></i></a>
-							{if {$user.id} != $_SESSION['userid']}<span title="{lang article_delete}" class="link" data-link-modal="/v/admin/user/delete/{$user.id}" data-modal-container="modal_delete"><i class="glyphicon glyphicon-trash"></i></span>{/if}
+							{if {$user.id} != $_SESSION['userid']}<span class="delete_merchant" data-url="/admin/merchantmanagement/delete/" data-name="merchant" data-pk="{$user.id_merchant}"><i class="glyphicon glyphicon-trash"></i></span>{/if}
 							
 						</td>				
 					</tr>
@@ -40,7 +61,7 @@
 							<div class="row accordian-body collapse" id="row{$user.id}" style="background-color:#fff"> 
 								<div class="col-md-7">
 									<h4 style="text-align:center">Addresses</h4>
-									<div id="msg_address_{$user.id}" class="alert hide fade in"></div>
+									<div class="alert fade in" style="display:none"></div>
 									<table class="table table-striped table-hover">
 										<thead>
 											<tr>
@@ -51,53 +72,48 @@
 											</tr>
 										</thead>						
 										<tbody>
-										{for $count, $address in $user.addresses}	
-										<tr>
-											<td><b>
-											<a href="#" class="editable-data-popup" data-name="address_name" data-type="text" data-pk="{$address.id_address}" data-url="/admin/merchantmanagement/edit/">{$address.address_name}</a>
-											</b></td>
-											<td><a href="#" class="editable-data-popup" data-name="address" data-type="textarea" data-pk="{$address.id_address}" data-url="/admin/merchantmanagement/edit/">{$address.address}</a>
-											</td>
-											<td><a href="#" class="editable-data-popup" data-name="opening_hours" data-type="textarea" data-pk="{$address.id_address}" data-url="/admin/merchantmanagement/edit/">{$address.opening_hours}</a></td>
-											<td colspan="2"><a href="#" class="editable-data-popup" data-name="tel" data-type="text" data-pk="{$address.id_address}" data-url="/admin/merchantmanagement/edit/">{$address.tel}</a></td>
-										</tr>
-										{/for}
-										</tbody>
-										<tr id="row_new_address_{$user.id}" >
-											<td>
-												<a href="#" class="new_address_{$user.id}" data-name="address_name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
-											</td>
-											<td>
-												<a href="#" class="new_address_{$user.id}" data-name="address" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
-											</td>
-											<td>
-												<a href="#" class="new_address_{$user.id}" data-name="opening_hours" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
-											</td>
-											<td>
-												<a href="#" class="new_address_{$user.id}" data-name="tel" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
-											</td>
-											<td>
-												<button class="btn btn-primary" id="new_address_submit_{$user.id}" data-url="/admin/merchantmanagement/add/address/{$user.id_merchant}">Add</button>
-											</td>
-										</tr>	
-										<script>
-											require(['jquery', 'bootstrap3-editable', '../apps/merchantmanagement/admin/js/script'], function($) {
-												$.fn.editable.defaults.mode = 'inline';
-												$(document).ready(function() {
-													declare({$user.id}, 'address');
-												});
-											});
-										</script>
+											{for $count, $address in $user.addresses}	
+											<tr>
+												<td><b>
+												<a href="#" class="editable-data-popup" data-name="address_name" data-type="text" data-pk="{$address.id_address}" data-url="/admin/merchantmanagement/edit/">{$address.address_name}</a>
+												</b></td>
+												<td><a href="#" class="editable-data-popup" data-name="address" data-type="textarea" data-pk="{$address.id_address}" data-url="/admin/merchantmanagement/edit/">{$address.address}</a>
+												</td>
+												<td><a href="#" class="editable-data-popup" data-name="opening_hours" data-type="textarea" data-pk="{$address.id_address}" data-url="/admin/merchantmanagement/edit/">{$address.opening_hours}</a></td>
+												<td><a href="#" class="editable-data-popup" data-name="tel" data-type="text" data-pk="{$address.id_address}" data-url="/admin/merchantmanagement/edit/">{$address.tel}</a></td>
+												<td><span class="delete_row" data-url="/admin/merchantmanagement/delete/" data-name="address" data-pk="{$address.id_address}"><i class="glyphicon glyphicon-trash"></i></span></td>
+											</tr>
+											{/for}
+											<tr class="new-row" data-name="address" data-id="{$user.id}">
+												<td>
+													<b>
+													<a href="#" class="add" data-name="address_name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													</b>
+												</td>
+												<td>
+													<a href="#" class="add" data-name="address" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+												</td>
+												<td>
+													<a href="#" class="add" data-name="opening_hours" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+												</td>
+												<td>
+													<a href="#" class="add" data-name="tel" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+												</td>
+												<td><span class="delete_row hide" data-url="/admin/merchantmanagement/delete/" data-name="address"><i class="glyphicon glyphicon-trash"></i></span>
+													<span class="submit" data-url="/admin/merchantmanagement/add/address/{$user.id_merchant}"><i class="glyphicon glyphicon-ok"></i></span>
+												</td>
+											</tr>	
+											</tbody>
 									</table>
 								</div>
 								<div class="col-md-5">
 									<h4 style="text-align:center">Emails</h4>
-									<div id="msg_email_{$user.id}" class="alert hide fade in"></div>
+									<div class="alert fade in" style="display:none"></div>
 									<table class="table table-striped table-hover" id="table_email">
 										<thead>
 											<tr>
-												<th width="40%"><i class="{$nickname_class}"></i> {lang name}</th>
-												<th width="60%" colspan="2"><i class="{$nickname_class}"></i> {lang email}</th>
+												<th width="30%"><i class="{$nickname_class}"></i> {lang name}</th>
+												<th width="70%" colspan="2"><i class="{$nickname_class}"></i> {lang email}</th>
 											</tr>
 										</thead>						
 										<tbody>
@@ -108,34 +124,30 @@
 														{$mail.email_name}
 													</a>
 												</td>
-												<td colspan="2">
+												<td>
 													<a href="#" class="editable-data-popup" data-name="contacts_email" data-type="text" data-pk="{$mail.id_email}" data-url="/admin/merchantmanagement/edit/">	
 														{$mail.email}
 													</a>
 												</td>
+												<td>
+													<span class="delete_row" data-url="/admin/merchantmanagement/delete/" data-name="email" data-pk="{$mail.id_email}"><i class="glyphicon glyphicon-trash"></i></span>
+												</td>
 											</tr>
 											{/for}	
-											<tr id="row_new_email_{$user.id}" >
+											<tr class="new-row" data-name="email" data-id="{$user.id}">
 												<td>
-													<a href="#" class="new_email_{$user.id}" data-name="contacts_name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required">
-													</a>
-												</td>
-												<td width="40%">
-													<a href="#" class="new_email_{$user.id}" data-name="contacts_email" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="email">	
+													<a href="#" class="add" data-name="contacts_name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required">
 													</a>
 												</td>
 												<td>
-													<button class="btn btn-primary" id="new_email_submit_{$user.id}" data-url="/admin/merchantmanagement/add/contacts/{$user.id_merchant}">Add</button>
+													<a href="#" class="add" data-name="contacts_email" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="email">	
+													</a>
+												</td>
+												<td>
+													<span class="delete_row hide" data-url="/admin/merchantmanagement/delete/" data-name="email"><i class="glyphicon glyphicon-trash"></i></span>
+													<span class="submit" data-url="/admin/merchantmanagement/add/contacts/{$user.id_merchant}"><i class="glyphicon glyphicon-ok"></i></span>
 												</td>
 											</tr>	
-											<script>
-												require(['jquery', 'bootstrap3-editable', '../apps/merchantmanagement/admin/js/script'], function($) {
-													$.fn.editable.defaults.mode = 'inline';
-													$(document).ready(function() {
-														declare({$user.id}, 'email');
-													});
-												});
-											</script>
 										</tbody>
 									</table>
 								</div>
@@ -143,11 +155,29 @@
 						</td>
 					</tr>
 					{/for}
-					{empty}
-					<tr>
-						<td colspan="6" class="text-center">{lang no_user_found}</td>
+					<tr class="new-row" data-name="email" data-id="{$user.id}" id="row_new_email_{$user.id}" >
+						<td><span data-toggle="collapse" data-target="#row" class="black accordion-toggle" title="{lang edit}"><i class="glyphicon glyphicon-plus"></i></span></td>
+						<td><strong>
+							<a href="#" class="add" data-name="nickname" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required">	
+							</a>
+						</strong></td>
+						<td><strong>
+							<a href="#" class="add" data-name="name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required">	
+							</a>
+						</strong></td>
+						<td>
+							<a href="#" class="add" data-name="email" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="email">	
+							</a>
+						</td>
+						<td>
+							<a href="#" class="add" data-name="password" data-type="password" data-url="/admin/merchantmanagement/edit/" data-verif="password"></a>
+						</td>
+						<td></td>
+						<td>
+							<span class="delete_merchant hide" data-url="/admin/merchantmanagement/delete/" data-name="merchant" data-pk="{$user.id}"><i class="glyphicon glyphicon-trash"></i></span>
+							<span class="submit" data-url="/admin/merchantmanagement/add/merchant/"><i class="glyphicon glyphicon-ok"></i></span>							
+						</td>
 					</tr>
-					{/empty}
 				</tbody>
 			</table>
 			{$pagination}
@@ -155,7 +185,6 @@
 	</div>
 
 	<div id="modal_delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_delete" aria-hidden="true"></div>
+	
 </div>
 </div>
-
-

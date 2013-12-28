@@ -1,50 +1,51 @@
-require(['jquery', 'bootstrap3-editable'], function($) {
-		$(document).ready(function() {
-			$('.editable-data').editable({
-				success: function(data) {
-					if(!data.success) {
-						return data.msg;
-					}
-				}
+function displayTemporaryMessage(msg_div,msg) {
+	msg_div.addClass('alert-success')
+			.removeClass('alert-danger')
+			.html(msg).show();
+						
+	setTimeout(function() {
+		msg_div.fadeTo(500, 0).slideUp(500, function(){
+			$(this).removeAttr("style").hide(); 
 			});
-			$('.editable-data-popup').editable({
-				success: function(data) {
-					if(!data.success) {
-						return data.msg;
-					}
-				},
-				mode: 'popup'
-			});
-			$('.delete_row').click(function() {
-				//$(
+	}, 2000);	
+}
 
-			});
-		});
-	});
-	
-function declare(id, type) {
-	function cloneRow(class_form, row, table)
+function displayError(msg_div,msg) {
+	msg_div.addClass('alert-danger')
+			.removeClass('alert-success')
+			.html(msg).show();
+}
+
+function declare(row) {	
+	function cloneRow(class_form, row)
 	{
-		class_form.removeClass('editable-unsaved');
+		class_form.removeClass('editable-unsaved'); //switch to save
 		var clone = row.clone(); // copy children too
 				
-		class_form.removeClass('new_' + type + '_' + id).addClass('editable-data-popup');
+		class_form.removeClass('add').addClass('editable-data-popup'); //switch to editable
 		
-		row.find("td:last").remove();
-		row.find("td:last").attr("colspan", 2);
-		row.after(clone); // add new row to end of table
-		row.removeAttr("id");
-				
-		$('.new_' + type + '_' + id).attr('class', 'new_' + type + '_' + id)
+		//Row operations
+		//row.find("td:last").remove();				//remove last td
+		//row.find("td:last").attr("colspan", 2);		//add colspan
+		row.find(".submit").remove();
+		row.removeAttr("id");						//remove id
+		row.removeClass("new-row");					//remove class new-row
+		row.removeAttr("data-id");					//remove useless attributes
+		row.removeAttr("data-name");
+		
+		 // add new row to end of table
+		row.after(clone);
+		
+		//Reset form
+		clone.find('a.add').attr('class', 'add')
 				.editable('setValue', null)
 				.editable('option', 'pk', null);      
 	}
 	
-	var class_form = $('.new_' + type + '_' + id);
-	var submit_button = $('#new_' + type + '_submit_' +id);
-	var row = $('#row_new_' + type + '_' +id);
-	var table = $('#table_' + type);
-	var msg_div =	$('#msg_' + type + '_' + id);
+	var class_form = row.find('a.add');
+	var submit_button = row.find('.submit');
+	var table = row.parents('table');
+	var msg_div = row.parents('table').first().siblings('.alert');
 	
 	class_form.editable();
 	
@@ -60,17 +61,22 @@ function declare(id, type) {
 				if( v == '' || !re.test(v)) {
 					return 'Invalid email';
 				}
+			} else if(verif_type == 'password') {
+				if(v.password != v.password_confirm) {
+					return 'Password and its confirmation must be equal !';
+				}
 			}
 		} 
 	);
 	
-	class_form.editable('option', 'mode', 'popup');
+	class_form.editable('option', 'mode', 'inline');
 	
 	//Switch
 	class_form.on('save', function(){
 		var that = this;
 		setTimeout(function() {
-			$(that).closest('td').next().find('.new_' + type + '_' + id).editable('show');
+			var nextField = $(that).parents('td').first().next().find('a.add');
+			nextField.editable('show');
 		}, 200);
 	});
 	
@@ -79,27 +85,19 @@ function declare(id, type) {
 			url: submit_button.attr('data-url'),
 			success: function(data) {
 				if(data.success) {
-					var msg = 'Contact email successfully added.';
+					var msg = 'Record successfully added.';
+					//msg += JSON.stringify(data, null, 2);
 					class_form.editable('option', 'pk', data.id); 
-					cloneRow(class_form, row, table);
-					msg_div.addClass('alert-success')
-						.removeClass('alert-danger')
-						.removeClass('hide')
-						.html(msg).show();
-						
-					setTimeout(function() {
-						msg_div.fadeTo(500, 0).slideUp(500, function(){
-							$(this).addClass('hide').removeAttr("style"); 
-							});
-					}, 2000);	
+					cloneRow(class_form, row);
 					
-					//redeclare class_form
-					declare(id, type); 
+					//Display message
+					displayTemporaryMessage(msg_div,msg);
+					
+					//display button
+					row.find(".delete_row .delete_merchant").removeClass("hide");
+					row.find(".delete_row .delete_merchant").attr("data-pk", data.id);
 				} else {
-					msg_div.removeClass('alert-success')
-						.addClass('alert-danger')
-						.removeClass('hide')
-						.html(data.msg).show();
+					displayError(msg_div,data.msg);
 				}
 			},
 			error: function(data) {
@@ -109,10 +107,230 @@ function declare(id, type) {
 				} else if(data.responseText) {   //ajax error
 					msg = data.responseText; 
 				}
-				msg_div.removeClass('alert-success')
-					.addClass('alert-danger')
-					.removeClass('hide').html(msg).show();
+				displayError(msg_div,msg);
 			}
 		}); 
 	});
 }
+
+function deleteRecord(row, msg_div, url, pk, name) {
+	var ajaxOptions = {
+			url: url,
+			data: {pk: pk, name: name},
+			type: 'POST'
+		};                  
+
+	ajaxOptions.success = function(data) {
+		if(data.success) {
+			var msg = 'Data successfully removed';
+			
+			//Display message
+			displayTemporaryMessage(msg_div,msg);
+			
+			row.remove();
+		} else {
+			displayError(msg_div,data.msg);
+		}
+	}
+				  
+	ajaxOptions.error = function(data) {
+		displayError(msg_div,JSON.stringify(data));
+
+	}							 
+	
+	// perform ajax request
+	$.ajax(ajaxOptions);
+}
+
+//----------------------------------------------------------------------------------
+//require part
+require(['jquery', 'bootstrap3-editable'], function($) {
+	$.fn.editable.defaults.mode = 'inline';
+
+	
+//Password editable--------------------------------
+	 "use strict";
+    
+    var Password = function (options) {
+        this.init('address', options, Password.defaults);
+    };
+
+    //inherit from Abstract input
+    $.fn.editableutils.inherit(Password, $.fn.editabletypes.abstractinput);
+
+    $.extend(Password.prototype, {
+        /**
+        Renders input from tpl
+
+        @method render() 
+        **/        
+        render: function() {
+           this.$input = this.$tpl.find('input');
+        },
+        
+        /**
+        Default method to show value in element. Can be overwritten by display option.
+        
+        @method value2html(value, element) 
+        **/
+        value2html: function(value, element) {
+            if(!value) {
+                $(element).empty();
+                return; 
+            }
+            var html = '********';
+            $(element).html(html); 
+        },
+        
+        /**
+        Gets value from element's html
+        
+        @method html2value(html) 
+        **/        
+        html2value: function(html) {
+          return null;  
+        },
+      
+       /**
+        Converts value to string. 
+        It is used in internal comparing (not for sending to server).
+        
+        @method value2str(value)  
+       **/
+       value2str: function(value) {
+           var str = '';
+           if(value) {
+               for(var k in value) {
+                   str = str + k + ':' + value[k] + ';';  
+               }
+           }
+           return str;
+       }, 
+       
+       /*
+        Converts string to value. Used for reading value from 'data-value' attribute.
+        
+        @method str2value(str)  
+       */
+       str2value: function(str) {
+           /*
+           this is mainly for parsing value defined in data-value attribute. 
+           If you will always set value by javascript, no need to overwrite it
+           */
+           return str;
+       },                
+       
+       /**
+        Sets value of input.
+        
+        @method value2input(value) 
+        @param {mixed} value
+       **/         
+       value2input: function(value) {
+           if(!value) {
+             return;
+           }
+           this.$input.filter('[name="password"]').val('');
+           this.$input.filter('[name="password_confirm"]').val('');
+       },       
+       
+        /**
+        Returns value of input.
+        
+        @method input2value() 
+       **/          
+       input2value: function() { 
+			return {
+				password: this.$input.filter('[name="password"]').val(),
+				password_confirm: this.$input.filter('[name="password_confirm"]').val()
+			};
+       },        
+       
+        /**
+        Activates input: sets focus on the first field.
+        
+        @method activate() 
+       **/        
+       activate: function() {
+            this.$input.filter('[name="password"]').focus();
+       },  
+       
+       /**
+        Attaches handler to submit form in case of 'showbuttons=false' mode
+        
+        @method autosubmit() 
+       **/       
+       autosubmit: function() {
+           this.$input.keydown(function (e) {
+                if (e.which === 13) {
+                    $(this).closest('form').submit();
+                }
+           });
+       }	   
+    });
+
+    Password.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
+        tpl: '<div class="container">' +
+			'<div class="editable-address row" style="margin:2px;"><span class="col-md-4">Password: </span><span class="col-md-8"><input type="password" name="password" class="input-small"></span></div>'+
+             '<div class="editable-address row" style="margin:2px"><span class="col-md-4">Confirmation: </span><span class="col-md-8"><input type="password" name="password_confirm" class="input-small"></span></div>'+
+			 '</div>',             
+        inputclass: ''
+    });
+
+    $.fn.editabletypes.password = Password;
+	
+//when ready
+	$(document).ready(function() {
+		$('.editable-data').editable({
+			success: function(data) {
+				if(!data.success) {
+					return data.msg;
+				}
+			}
+		});
+		$('.editable-data-popup').editable({
+			success: function(data) {
+				if(!data.success) {
+					return data.msg;
+				}
+			}
+		});
+		
+		$('.editable-password').editable({
+			success: function(data) {
+				if(!data.success) {
+					return data.msg;
+				}
+			},
+			validate: function(value) {
+				if(value.password != value.password_confirm) {
+					return 'Password and its confirmation must be equals !';
+				}
+			},
+			mode: 'popup',
+			emptytext: '********',
+			emptyclass: '',
+			placement:'left'
+		});       
+		
+		$('.delete_merchant').click(function() {
+			var msg_div = $(this).parents('table').first().siblings('.alert');
+			var that = $(this);
+			$('#confirmation_window').find('#confirm').unbind('click').click(function() {
+						deleteRecord(that.closest('tr'), msg_div, that.attr('data-url'), that.attr('data-pk'), that.attr('data-name'))
+					}
+			);
+			$('#confirmation_window').modal('show');
+			
+		});
+		
+		$('.delete_row').click(function() {
+			var msg_div = $(this).parents('table').first().siblings('.alert');
+			deleteRecord($(this).closest('tr'), msg_div, $(this).attr('data-url'), $(this).attr('data-pk'), $(this).attr('data-name'));
+		});
+		
+		$('.new-row').each(function() {
+			declare($(this));
+		});
+	});
+});

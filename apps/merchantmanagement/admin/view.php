@@ -29,12 +29,13 @@ class MerchantManagementAdminView extends WView {
 	public function listing(array $model) {
 		$this->assign('require', '{$base_url}/apps/merchantmanagement/admin/js/script.js');
 		$this->assign('users', $model['users']);
+		$this->assign($model['sorting_tpl']);
 		
 		$pagination = WHelper::load('pagination', array(
 			$model['stats']['request'],
 			$model['per_page'],
 			$model['current_page'],
-			'/admin/user/listing/')
+			'/admin/merchantmanagement/listing/%d/')
 		);
 		$this->assign('pagination', $pagination->getHTML());
 	}
@@ -51,7 +52,7 @@ class MerchantManagementAdminView extends WView {
 	
 	public function success($id = null) {
 		$this->push_content('success', true);
-		if($id == null) {
+		if($id != null) {
 			$this->push_content('id', $id);
 		}
 	}

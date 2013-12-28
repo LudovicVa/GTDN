@@ -25,5 +25,6 @@
 		<action description="Edit" menu="false">edit</action>
 		<action description="Check" menu="false">check</action>
 		<action description="Add" menu="false">add</action>
+		<action description="Delete" menu="false">delete</action>
 	</admin>
 </app>
