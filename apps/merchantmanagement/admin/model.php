@@ -72,6 +72,21 @@ class MerchantManagementAdminModel extends UserAdminModel {
 		return $merchants;
 	}
 	
+	public function getUserIdByMerchant($merchant_id) {
+		$prep = $this->db->prepare('
+			SELECT id_user
+			FROM merchants
+			WHERE id_merchant = :id'
+		);
+		$prep->bindParam(':id', $merchant_id);
+		if(!$prep->execute()) {	return 'Unknown error.'; }
+		$user_id = $prep->fetchAll(PDO::FETCH_ASSOC);
+		if(count($user_id) != 1) { return 'Unknown merchants.'; }
+		$user_id = $user_id[0]['id_user'];
+		
+		return $user_id;
+	}
+	
 	public function updateName($id_merchant, $name) {
 		$prep = $this->db->prepare('UPDATE merchants SET name=:name WHERE id_merchant = :id');
 		$prep->bindParam(':id', $id_merchant);

@@ -16,30 +16,63 @@ function displayError(msg_div,msg) {
 			.html(msg).show();
 }
 
-function declare(row) {	
-	function cloneRow(class_form, row)
+/**
+** Declare a new record row
+**/
+function declareNewRow(row) {
+
+	/**
+	** Clone a row
+	**/
+	function cloneRow(class_form, row, id)
 	{
 		class_form.removeClass('editable-unsaved'); //switch to save
 		var clone = row.clone(); // copy children too
 				
-		class_form.removeClass('add').addClass('editable-data-popup'); //switch to editable
+		class_form.removeClass('add').addClass('editable-data'); //switch to editable
+		class_form.editable('option', 'success', function(data) {
+				if(!data.success) {
+					return data.msg;
+				}
+			}
+		);
 		
 		//Row operations
-		//row.find("td:last").remove();				//remove last td
-		//row.find("td:last").attr("colspan", 2);		//add colspan
 		row.find(".submit").remove();
+		var clonehidden;
+		//in case its a merchant, we have to activate the collapsing stuff
+		if(row.attr("data-name") == 'merchant') {
+			row.find('.accordion-toggle').attr('data-target', '#row' + id);
+			clonehidden = row.next('.new-row-collapse').first().clone();
+			//activate the hidden row
+			var test = row.next('.new-row-collapse').find('.accordian-body');
+			row.next('.new-row-collapse').find('.accordian-body').attr('id', 'row' + id);
+			//add id to url for submit button
+			row.next('.new-row-collapse').find('.submit').attr('data-url', row.next('.new-row-collapse').find('.submit').attr('data-url') + id);
+		}
+		
 		row.removeAttr("id");						//remove id
 		row.removeClass("new-row");					//remove class new-row
 		row.removeAttr("data-id");					//remove useless attributes
 		row.removeAttr("data-name");
 		
-		 // add new row to end of table
-		row.after(clone);
+				
+		//in case its a merchant, we have to activate the collapsing stuff
+		if(typeof(clonehidden) != 'undefined') { // add new row to end of table
+			row.next('.new-row-collapse').after(clone);
+			row.next('.new-row-collapse').removeClass('.new-row-collapse');
+			clone.after(clonehidden);			
+		} else {
+			row.after(clone);
+		}
 		
 		//Reset form
 		clone.find('a.add').attr('class', 'add')
 				.editable('setValue', null)
-				.editable('option', 'pk', null);      
+				.editable('option', 'pk', null);
+				
+		//redeclare
+		declareNewRow(clone);
 	}
 	
 	var class_form = row.find('a.add');
@@ -88,14 +121,17 @@ function declare(row) {
 					var msg = 'Record successfully added.';
 					//msg += JSON.stringify(data, null, 2);
 					class_form.editable('option', 'pk', data.id); 
-					cloneRow(class_form, row);
+										
+					cloneRow(class_form, row, data.id);
+					
+					//button
+					row.find(".delete_row").removeClass("hide");
+					row.find(".delete_row").attr("data-pk", data.id);
+					row.find(".delete_merchant").removeClass("hide");
+					row.find(".delete_merchant").attr("data-pk", data.id);
 					
 					//Display message
-					displayTemporaryMessage(msg_div,msg);
-					
-					//display button
-					row.find(".delete_row .delete_merchant").removeClass("hide");
-					row.find(".delete_row .delete_merchant").attr("data-pk", data.id);
+					displayTemporaryMessage(msg_div,msg);					
 				} else {
 					displayError(msg_div,data.msg);
 				}
@@ -113,6 +149,9 @@ function declare(row) {
 	});
 }
 
+/**
+** Delete a record
+**/
 function deleteRecord(row, msg_div, url, pk, name) {
 	var ajaxOptions = {
 			url: url,
@@ -135,7 +174,6 @@ function deleteRecord(row, msg_div, url, pk, name) {
 				  
 	ajaxOptions.error = function(data) {
 		displayError(msg_div,JSON.stringify(data));
-
 	}							 
 	
 	// perform ajax request
@@ -143,7 +181,7 @@ function deleteRecord(row, msg_div, url, pk, name) {
 }
 
 //----------------------------------------------------------------------------------
-//require part
+//required part
 require(['jquery', 'bootstrap3-editable'], function($) {
 	$.fn.editable.defaults.mode = 'inline';
 
@@ -288,13 +326,6 @@ require(['jquery', 'bootstrap3-editable'], function($) {
 				}
 			}
 		});
-		$('.editable-data-popup').editable({
-			success: function(data) {
-				if(!data.success) {
-					return data.msg;
-				}
-			}
-		});
 		
 		$('.editable-password').editable({
 			success: function(data) {
@@ -330,7 +361,7 @@ require(['jquery', 'bootstrap3-editable'], function($) {
 		});
 		
 		$('.new-row').each(function() {
-			declare($(this));
+			declareNewRow($(this));
 		});
 	});
 });

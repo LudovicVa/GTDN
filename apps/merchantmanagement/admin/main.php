@@ -73,14 +73,19 @@ class MerchantManagementAdminController extends WController {
 				}
 				break;	
 			case 'nickname':
-				if($this->model->checkNickname($value)) {
-					if($this->model->updateUser($merchant_id, array('nickname' => $value))) {
-						$this->view->success();
+				if(!is_string($e = $this->model->checkNickname($value))) {
+					$user_id = $this->model->getUserIdByMerchant($merchant_id);
+					if($user_id >= 0) {
+						if($this->model->updateUser($user_id, array('nickname' => $value))) {
+							$this->view->success();
+						} else {
+							$this->view->error('Unknown error. Please retry');
+						}
 					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
+						$this->view->error($user_id);
+					}					
 				} else {
-					$this->view->error('The nickname is not valid or already exists.');
+					$this->view->error(WLang::get($e));
 				}
 				break;
 			case 'password':
@@ -88,25 +93,35 @@ class MerchantManagementAdminController extends WController {
 					if($value['password'] != $value['password_confirm']) {
 						$this->view->error('Password must be equals.');
 					} else {
-						if($this->model->updateUser($merchant_id, array('password' => sha1($value['password'])))) {
-							$this->view->success();
+						$user_id = $this->model->getUserIdByMerchant($merchant_id);
+						if($user_id >= 0) {
+							if($this->model->updateUser($user_id, array('password' => sha1($value['password'])))) {
+								$this->view->success();
+							} else {
+								$this->view->error('Unknown error. Please retry.');
+							}
 						} else {
-							$this->view->error('Unknown error. Please retry.');
-						}
+							$this->view->error($user_id);
+						}	
 					}
 				} else {
 					$this->view->error('The password can not be empty.');
 				}
 				break;	
 			case 'email':
-				if($this->model->checkEmail($value)) {
-					if($this->model->updateUser($merchant_id, array('email' => $value))) {
-						$this->view->success();
+				if(!is_string($e = $this->model->checkEmail($value))) {
+					$user_id = $this->model->getUserIdByMerchant($merchant_id);
+					if($user_id >= 0) {
+						if($this->model->updateUser($user_id, array('email' => $value))) {
+							$this->view->success();
+						} else {
+							$this->view->error('Unknown error. Please retry');
+						}
 					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
+						$this->view->error($user_id);
+					}	
 				} else {
-					$this->view->error('The email is already existing or invalid.');
+					$this->view->error(WLang::get($e));
 				}
 				break;
 			case 'contacts_email':
@@ -254,7 +269,10 @@ class MerchantManagementAdminController extends WController {
 				}
 				break;
 			case 'merchant':
-				$this->addMerchant($_POST);
+				$id = $this->addMerchant($_POST);
+				if(isset($id)) {
+					$this->view->success($id);
+				}
 				break;
 			default:
 				$this->view->error("Command Unrecognised");
@@ -329,12 +347,12 @@ class MerchantManagementAdminController extends WController {
 		return $val;
 	}
 	
-	private function addMerchant(array $params) {	
-		if(!$this->model->checkNickname($params['nickname'])) {
-			$this->view->error("Nickname invalid or already existing.");
+	private function addMerchant(array $params) {
+		//error_log(is_string($this->model->checkNickname($params['nickname'])));
+		if(is_string($e = $this->model->checkNickname(isset($params['nickname']) ? $params['nickname'] : ''))) {
+			$this->view->error(WLang::get($e));
 			return;
 		}
-		print_r($params);
 		
 		if($params['password']['password'] != $params['password']['password_confirm']) {
 			$this->view->error("Password and its confirmation must be equals.");
@@ -342,8 +360,8 @@ class MerchantManagementAdminController extends WController {
 		}
 		$params['password'] = sha1($params['password']['password']);
 		
-		if(!$this->model->checkEmail($params['email'])) {
-			$this->view->error("Nickname invalid or already existing.");
+		if(is_string($e = $this->model->checkEmail(isset($params['email']) ? $params['email'] : ''))) {
+			$this->view->error(WLang::get($e));
 			return;
 		}
 		
@@ -351,7 +369,7 @@ class MerchantManagementAdminController extends WController {
 		$params['access'] = '';
 		$params['confirm'] = '';
 		
-		$this->model->createMerchant($params);
+		return $this->model->createMerchant($params);
 	}
 }
 

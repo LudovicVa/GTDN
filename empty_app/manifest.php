@@ -2,7 +2,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <app>
 	<!-- Application name -->
-	<name>Merchant Manager</name>
+	<!--<name>Merchant Manager</name>-->
 	
 	<version>0.1</version>
 	
