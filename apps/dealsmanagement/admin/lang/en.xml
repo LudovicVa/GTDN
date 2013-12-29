@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<lang value="en">
+	<!-- Actions -->
+	<item id="listing">List of merchants</item>
+		
+	<!-- General -->
+	<item id="name">Deal name</item>
+	<item id="register_time">Registering time</item>
+	<item id="last_connection">Last connection</item>
+	<item id="edit">Edit</item>
+	<item id="delete">Delete</item>
+	<item id="cancel">Cancel</item>
+	
+	<!-- Confirmation -->
+	<item id="confirmation_title">Do you really wish to continue ?</item>
+	<item id="confirmation_body">Do you really wish to delete this deal and all the data related to it ?</item>
+</lang>

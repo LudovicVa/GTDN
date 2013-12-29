@@ -153,8 +153,8 @@ class WResponse {
 		$dir = WRoute::getDir();
 		if (!empty($dir)) {
 			$string = str_replace(
-				array('src="/', 'href="/', 'action="/', 'data-link-modal="/', 'data-url="/'),
-				array('src="'.$dir.'/', 'href="'.$dir.'/', 'action="'.$dir.'/', 'data-link-modal="'.$dir.'/', 'data-url="'.$dir.'/'),
+				array('src="/', 'href="/', 'action="/', 'data-link-modal="/', 'data-url="/', 'data-source="/'),
+				array('src="'.$dir.'/', 'href="'.$dir.'/', 'action="'.$dir.'/', 'data-link-modal="'.$dir.'/', 'data-url="'.$dir.'/', 'data-source="/'.$dir.'/'),
 				$string
 			);
 		}
@@ -187,7 +187,9 @@ class WResponse {
 
 		// Store the notes
 		$model['notes'] = WNote::get('*');
-
+		
+		header('Content-Type: application/json');
+		
 		echo str_replace('\\/', '/', json_encode($model));
 
 		return true;

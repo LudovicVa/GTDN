@@ -54,6 +54,14 @@ $manifest = array (
       array (
       ),
     ),
+    'delete' => 
+    array (
+      'description' => 'Delete',
+      'menu' => false,
+      'requires' => 
+      array (
+      ),
+    ),
   ),
   'admin_menu' => true,
   'default_admin' => 'listing',

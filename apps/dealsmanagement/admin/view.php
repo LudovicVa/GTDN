@@ -12,13 +12,13 @@ defined('WITYCMS_VERSION') or die('Access denied');
  * @author Johan Dufau <johan.dufau@creatiwity.net>
  * @version 0.4.0-26-04-2013
  */
-class MerchantManagementAdminView extends WView {
+class DealsManagementAdminView extends WView {
 	public function __construct() {
 		parent::__construct();
 
 		// CSS for all views
 		$this->assign('css', '/libraries/bootstrap3-editable/css/bootstrap-editable.css');
-		$this->assign('css', '/apps/merchantmanagement/admin/css/style.css');
+		$this->assign('css', '/apps/dealsmanagement/admin/css/style.css');
 	}
 
 	/**
@@ -27,16 +27,22 @@ class MerchantManagementAdminView extends WView {
 	 * @param array $model
 	 */
 	public function listing(array $model) {
-		$this->assign('require', '{$base_url}/apps/merchantmanagement/admin/js/password_type.js');
-		$this->assign('require', '{$base_url}/apps/merchantmanagement/admin/js/script.js');
-		$this->assign('users', $model['users']);
+		$this->assign('css', "/libraries/wysihtml5-bootstrap/bootstrap-wysihtml5-0.0.2.css");
+		$this->assign('require', 'apps!news/add_or_edit');
+		$this->assign('require', 'wysihtml5');
+		$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/moment.min.js');
+		$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/password_type.js');
+		$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/script.js');
+		$this->assign('deals', $model['deals']);
 		$this->assign($model['sorting_tpl']);
+		
+		$this->assign('base_url', WRoute::getBase());
 		
 		$pagination = WHelper::load('pagination', array(
 			$model['stats']['request'],
 			$model['per_page'],
 			$model['current_page'],
-			'/admin/merchantmanagement/listing/%d/')
+			'/admin/dealsmanagement/listing/%d/')
 		);
 		$this->assign('pagination', $pagination->getHTML());
 	}

@@ -1,0 +1,123 @@
+<div class="wity-app wity-app-user wity-action-listing">
+	<div class="row">
+		<div class="col-md-12">		
+			<div class="alert fade in" style="display:none"></div>	
+			<div class="modal fade" id="confirmation_window" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">{lang confirmation_title}</h4>
+				  </div>
+				  <div class="modal-body">
+					{lang confirmation_body}
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">{lang cancel}</button>
+					<button type="button" id="confirm" class="btn btn-primary" data-dismiss="modal">{lang confirm}</button>
+				  </div>
+				</div><!-- /.modal-content -->
+			</div>			
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th width="2%"></th>
+						<th width="3%">#</th>
+						<th width="20%"><a href="/admin/dealsmanagement/listing/deal_name-{$deal_name_sort}/"><i class="{$deal_name_class}"></i>{lang deal_name}</a></th>
+						<th width="20%"><a href="/admin/dealsmanagement/listing/merchant_name-{$nickname_sort}/"><i class="{$merchant_name_class}"></i>{lang merchant_name}</a></th>
+						<th width="10%"><a href="/admin/dealsmanagement/listing/start_time-{$start_time_sort}/"><i class="{$start_time_class}"></i> {lang start_time}</a></th>
+						<th width="10%"><a href="/admin/dealsmanagement/listing/end_time-{$end_time_sort}/"><i class="{$end_time_class}"></i>{lang end_time}</a></th>
+						<th width="15%"><a href="/admin/dealsmanagement/listing/price-{$price_sort}/"><i class="{$price_class}"></i>{lang price}</a></th>
+						<th width="15%" colspan="2"><a href="/admin/dealsmanagement/listing/original_price-{$original_price_sort}/"><i class="{$original_price_class}"></i>{lang original_price}</a></th>
+					</tr>
+				</thead>
+				<tbody>
+					{for $count, $deal in $deals}
+					<tr>
+						<td><span data-toggle="collapse" data-target="#row{$deal.id_deal}" class="black accordion-toggle" title="{lang edit}"><i class="glyphicon glyphicon-plus"></i></span></td>
+						<td>{$deal.id_deal}</td>
+						<td><strong>
+							<a href="#" class="editable-data" data-name="deal_name" data-type="text" data-pk="{$deal.id_deal}" data-url="/m/admin/dealsmanagement/edit/"  data-verif="required">	
+							{$deal.deal_name}
+							</a>
+						</strong></td>
+						<td><strong>
+							<a href="#" class="editable-data" data-name="merchant" data-type="select" data-pk="{$deal.id_deal}" data-url="/m/admin/dealsmanagement/edit/"  data-verif="required" data-source="{$base_url}/m/admin/dealsmanagement/merchants/" data-sourceCache="true" data-value="{$deal.id_merchant}">	
+							{$deal.merchant_name}
+							</a>
+						</strong></td>
+						<td>
+							<a href="#" class="editable-data" data-type="combodate" data-name="start_time" data-pk="{$deal.id_deal}" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD/MM/YY  HH:mm" data-viewformat="DD/MM/YY, HH:mm" data-url="/m/admin/dealsmanagement/edit/" data-verif="required" data-mode="popup" data-placement="left" data-combodate="{ minYear: 2013, maxYear: 2015}">
+							{$deal.start_time}</a>
+						</td>
+						<td>
+							<a href="#" class="editable-data" data-type="combodate" data-name="end_time" data-pk="{$deal.id_deal}" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD/MM/YY  HH:mm" data-viewformat="DD/MM/YY, HH:mm" data-url="/m/admin/dealsmanagement/edit/" data-verif="required" data-mode="popup" data-placement="left" data-combodate="{ minYear: 2013, maxYear: 2015}">
+							{$deal.end_time}</a>
+						</td>
+						<td>
+							$<a href="#" class="editable-data" data-name="price" data-type="text" data-pk="{$deal.id_deal}" data-url="/m/admin/dealsmanagement/edit/" data-inputclass="input-very-small">	
+							{$deal.price}
+							</a>
+						</td>
+						<td>
+							$<a href="#" class="editable-data" data-name="original_price" data-type="text" data-pk="{$deal.id_deal}" data-url="/m/admin/dealsmanagement/edit/"  data-verif="required" data-inputclass="input-very-small">	
+							{$deal.original_price}
+							</a>
+						</td>
+						<td>
+							<span class="delete_merchant" data-url="/m/admin/dealsmanagement/delete/" data-name="deal" data-pk="{$deal.id_deal}"><i class="glyphicon glyphicon-trash"></i></span>							
+						</td>				
+					</tr>
+					<tr>
+						<td colspan="8" class="hiddenRow">
+							<div class="accordian-body collapse" id="row{$deal.id_deal}" style="background-color:#fff"> 
+								<div class= "container" style="margin:10px">
+									<textarea id="news_content" class="form-control" name="news_content" rows="20" cols="80" data-witycms-wysiwyg="true"></textarea>					
+								</div>
+							</div>
+						</td>
+					</tr>
+					{/for}
+					<tr class="new-row" data-name="deal">
+						<td><span data-toggle="collapse" data-target="#row{$deal.id_deal}" class="black accordion-toggle" title="{lang edit}"><i class="glyphicon glyphicon-plus"></i></span></td>
+						<td class="id"></td>
+						<td><strong>
+							<a href="#" class="add" data-name="deal_name" data-type="text" data-url="/m/admin/dealsmanagement/edit/"></a>
+						</strong></td>
+						<td><strong>
+							<a href="#" class="add" data-name="merchant" data-type="select" data-url="/m/admin/dealsmanagement/edit/" data-source="{$base_url}/m/admin/dealsmanagement/merchants/" data-sourceCache="true"></a>
+						</strong></td>
+						<td>
+							<a href="#" class="add" data-type="combodate" data-name="start_time" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD/MM/YY  HH:mm" data-viewformat="DD/MM/YY, HH:mm" data-url="/m/admin/dealsmanagement/edit/" data-mode="popup" data-placement="left" data-combodate="{ minYear: 2013, maxYear: 2015}"></a>
+						</td>
+						<td>
+							<a href="#" class="add" data-type="combodate" data-name="end_time" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD/MM/YY  HH:mm" data-viewformat="DD/MM/YY, HH:mm" data-url="/m/admin/dealsmanagement/edit/" data-mode="popup" data-placement="left" data-combodate="{ minYear: 2013, maxYear: 2015}"></a>
+						</td>
+						<td>
+							$<a href="#" class="add" data-name="price" data-type="text" data-url="/m/admin/dealsmanagement/edit/" data-inputclass="input-very-small"></a>
+						</td>
+						<td>
+							$<a href="#" class="add" data-name="original_price" data-type="text" data-url="/m/admin/dealsmanagement/edit/" data-inputclass="input-very-small"></a>
+						</td>
+						<td>
+							<span class="delete_merchant hide" data-url="/m/admin/dealsmanagement/delete/" data-name="deal"><i class="glyphicon glyphicon-trash"></i></span>				<span class="submit" data-url="/m/admin/dealsmanagement/add/deal/"><i class="glyphicon glyphicon-ok"></i></span>		
+						</td>				
+					</tr>
+					<tr>
+						<td colspan="8" class="hiddenRow">
+							<div class="accordian-body collapse" id="row{$deal.id_deal}" style="background-color:#fff"> 
+								<div class= "container" style="margin:10px">
+									<textarea id="news_content" class="form-control" name="news_content" rows="20" cols="80" data-witycms-wysiwyg="true"></textarea>					
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			{$pagination}
+		</div>
+	</div>
+
+	<div id="modal_delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_delete" aria-hidden="true"></div>
+	
+</div>
+</div>

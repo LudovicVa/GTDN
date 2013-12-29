@@ -1,7 +1,7 @@
 <?php
 
 $manifest = array (
-  'name' => 'Merchant Manager',
+  'name' => 'empty_app',
   'version' => '0.1',
   'date' => '22-10-2013',
   'icone' => '',

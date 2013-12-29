@@ -15,6 +15,24 @@ function displayError(msg_div,msg) {
 			.removeClass('alert-success')
 			.html(msg).show();
 }
+function success (data) {
+	var msg = '';
+	var error = false;
+	if(data.notes instanceof Array) {
+		for(var key in data.notes) {				
+			if(data.notes[key].level == 'danger') {
+				error = true;
+				msg += data.notes[key].message + '\n';
+			}
+		}
+	} else {
+		error = true;
+		msg += 'Bad response - Contact admin\n';
+	}
+	if(error) {
+		return msg;
+	}
+}
 
 /**
 ** Declare a new record row
@@ -45,8 +63,8 @@ function declareNewRow(row) {
 		//Row operations
 		row.find(".submit").remove();
 		var clonehidden;
-		//in case there is an hidden row, we have to activate the collapsing stuff
-		if(typeof(hidden) != 'undefined') {
+		//in case its a merchant, we have to activate the collapsing stuff
+		if(row.attr("data-name") == 'merchant') {
 			row.find('.accordion-toggle').attr('data-target', '#row' + id);
 			clonehidden = hidden.clone();
 			//activate the hidden row
@@ -59,10 +77,11 @@ function declareNewRow(row) {
 		row.removeClass("new-row");					//remove class new-row
 		row.removeAttr("data-id");					//remove useless attributes
 		row.removeAttr("data-name");
-		
+		row.find('.id').html(id);					//add id value
 				
 		//in case its a merchant, we have to activate the collapsing stuff
 		if(typeof(clonehidden) != 'undefined') { // add new row to end of table
+		alert('test');
 			row.next('.new-row-collapse').after(clone);
 			row.next('.new-row-collapse').removeClass('.new-row-collapse');
 			clone.after(clonehidden);			
@@ -82,27 +101,11 @@ function declareNewRow(row) {
 	//declare as editable
 	class_form.editable();
 	
-	class_form.editable('option', 'validate',
-		function(v) {
-			var verif_type = $(this).attr('data-verif');
-			if(verif_type == 'required') {
-				if(v == '') { 
-					return 'Required field!'
-				}
-			} else if(verif_type == 'email') {
-				var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-				if( v == '' || !re.test(v)) {
-					return 'Invalid email';
-				}
-			} else if(verif_type == 'password') {
-				if(v.password != v.password_confirm) {
-					return 'Password and its confirmation must be equal !';
-				}
-			}
-		} 
-	);
+	class_form.editable('option', 'success', function(data) {
+		return success (data);
+	});
 	
-	class_form.editable('option', 'mode', 'inline');
+	class_form.editable('option', 'send', 'always');
 	
 	//Switch
 	class_form.on('save', function(){
@@ -119,7 +122,6 @@ function declareNewRow(row) {
 			success: function(data) {
 				if(data.success) {
 					var msg = 'Record successfully added.';
-					//msg += JSON.stringify(data, null, 2);
 					class_form.editable('option', 'pk', data.id); 
 										
 					cloneRow(class_form, row, data.id);
@@ -187,14 +189,15 @@ function deleteRecord(row, msg_div, url, pk, name) {
 //required part
 require(['jquery', 'bootstrap3-editable'], function($) {
 	$.fn.editable.defaults.mode = 'inline';
+	$.fn.editable.defaults.savenochange = true;
+	$.fn.editable.defaults.send = 'always';
+	$.fn.editable.defaults.onblur = 'submit';
 
 //when ready
 	$(document).ready(function() {
 		$('.editable-data').editable({
 			success: function(data) {
-				if(!data.success) {
-					return data.msg;
-				}
+				return success (data);
 			}
 		});     
 		
@@ -216,6 +219,10 @@ require(['jquery', 'bootstrap3-editable'], function($) {
 		
 		$('.new-row').each(function() {
 			declareNewRow($(this));
+		});
+		
+		var editor = new wysihtml5.Editor("wysihtml5-textarea", { // id of textarea element
+		  toolbar:      "wysihtml5-toolbar"
 		});
 	});
 });

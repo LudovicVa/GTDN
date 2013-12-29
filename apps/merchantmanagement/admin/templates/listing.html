@@ -48,7 +48,7 @@
 							</a>
 						</td>
 						<td>
-							<a href="#" class="editable-password" data-type="password" data-name="password"  data-pk="{$user.id_merchant}" data-url="/admin/merchantmanagement/edit/" data-verif="password"></a>
+							<a href="#" class="editable-data" data-type="password" data-name="password"  data-pk="{$user.id_merchant}" data-url="/admin/merchantmanagement/edit/" data-verif="password">********</a>
 						</td>
 						<td>{$user.last_activity}</td>
 						<td>
@@ -174,7 +174,7 @@
 						</td>
 						<td></td>
 						<td>
-							<span class="delete_merchant hide" data-url="/admin/merchantmanagement/delete/" data-name="merchant" data-pk="{$user.id}"><i class="glyphicon glyphicon-trash"></i></span>
+							<span class="delete_merchant hide" data-url="/admin/merchantmanagement/delete/" data-name="merchant"><i class="glyphicon glyphicon-trash"></i></span>
 							<span class="submit" data-url="/admin/merchantmanagement/add/merchant/"><i class="glyphicon glyphicon-ok"></i></span>							
 						</td>
 					</tr>
@@ -189,8 +189,8 @@
 											<tr>
 												<th width="20%"><i class="{$id_class}"></i> {lang name}</th>
 												<th width="30%"><i class="{$nickname_class}"></i> {lang address}</th>
-												<th width="30%"><i class="{$nickname_class}"></i> {lang opening_hours}</th>
-												<th colspan="2" width="20%"><i class="{$nickname_class}"></i> {lang tel}</th>
+												<th width="25%"><i class="{$nickname_class}"></i> {lang opening_hours}</th>
+												<th colspan="2" width="25%"><i class="{$nickname_class}"></i> {lang tel}</th>
 											</tr>
 										</thead>						
 										<tbody>
@@ -207,7 +207,7 @@
 													<a href="#" class="add" data-name="opening_hours" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="tel" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="tel" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
 												<td><span class="delete_row hide" data-url="/admin/merchantmanagement/delete/" data-name="address"><i class="glyphicon glyphicon-trash"></i></span>
 													<span class="submit" data-url="/admin/merchantmanagement/add/address/"><i class="glyphicon glyphicon-ok"></i></span>
