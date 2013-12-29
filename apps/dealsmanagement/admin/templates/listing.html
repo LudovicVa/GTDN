@@ -23,7 +23,7 @@
 						<th width="2%"></th>
 						<th width="3%">#</th>
 						<th width="20%"><a href="/admin/dealsmanagement/listing/deal_name-{$deal_name_sort}/"><i class="{$deal_name_class}"></i>{lang deal_name}</a></th>
-						<th width="20%"><a href="/admin/dealsmanagement/listing/merchant_name-{$nickname_sort}/"><i class="{$merchant_name_class}"></i>{lang merchant_name}</a></th>
+						<th width="20%"><a href="/admin/dealsmanagement/listing/merchant_name-{$merchant_name_sort}/"><i class="{$merchant_name_class}"></i>{lang merchant_name}</a></th>
 						<th width="10%"><a href="/admin/dealsmanagement/listing/start_time-{$start_time_sort}/"><i class="{$start_time_class}"></i> {lang start_time}</a></th>
 						<th width="10%"><a href="/admin/dealsmanagement/listing/end_time-{$end_time_sort}/"><i class="{$end_time_class}"></i>{lang end_time}</a></th>
 						<th width="15%"><a href="/admin/dealsmanagement/listing/price-{$price_sort}/"><i class="{$price_class}"></i>{lang price}</a></th>
@@ -78,7 +78,7 @@
 					</tr>
 					{/for}
 					<tr class="new-row" data-name="deal">
-						<td><span data-toggle="collapse" data-target="#row{$deal.id_deal}" class="black accordion-toggle" title="{lang edit}"><i class="glyphicon glyphicon-plus"></i></span></td>
+						<td><span data-toggle="collapse" class="black accordion-toggle" title="{lang edit}"><i class="glyphicon glyphicon-plus"></i></span></td>
 						<td class="id"></td>
 						<td><strong>
 							<a href="#" class="add" data-name="deal_name" data-type="text" data-url="/m/admin/dealsmanagement/edit/"></a>
@@ -102,9 +102,9 @@
 							<span class="delete_merchant hide" data-url="/m/admin/dealsmanagement/delete/" data-name="deal"><i class="glyphicon glyphicon-trash"></i></span>				<span class="submit" data-url="/m/admin/dealsmanagement/add/deal/"><i class="glyphicon glyphicon-ok"></i></span>		
 						</td>				
 					</tr>
-					<tr>
+					<tr class="new-row-collapse">
 						<td colspan="8" class="hiddenRow">
-							<div class="accordian-body collapse" id="row{$deal.id_deal}" style="background-color:#fff"> 
+							<div class="accordian-body collapse" style="background-color:#fff"> 
 								<div class= "container" style="margin:10px">
 									<textarea id="news_content" class="form-control" name="news_content" rows="20" cols="80" data-witycms-wysiwyg="true"></textarea>					
 								</div>

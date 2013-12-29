@@ -15,24 +15,6 @@ function displayError(msg_div,msg) {
 			.removeClass('alert-success')
 			.html(msg).show();
 }
-function success (data) {
-	var msg = '';
-	var error = false;
-	if(data.notes instanceof Array) {
-		for(var key in data.notes) {				
-			if(data.notes[key].level == 'danger') {
-				error = true;
-				msg += data.notes[key].message + '\n';
-			}
-		}
-	} else {
-		error = true;
-		msg += 'Bad response - Contact admin\n';
-	}
-	if(error) {
-		return msg;
-	}
-}
 
 /**
 ** Declare a new record row
@@ -54,14 +36,16 @@ function declareNewRow(row) {
 				
 		class_form.removeClass('add').addClass('editable-data'); //switch to editable
 		class_form.editable('option', 'success', function(data) {
-				return success(data);
+				if(!data.success) {
+					return data.msg;
+				}
 			}
 		);
 		
 		//Row operations
 		row.find(".submit").remove();
 		var clonehidden;
-		//in case its a merchant, we have to activate the collapsing stuff
+		//in case there is an hidden row, we have to activate the collapsing stuff
 		if(typeof(hidden) != 'undefined') {
 			row.find('.accordion-toggle').attr('data-target', '#row' + id);
 			clonehidden = hidden.clone();
@@ -75,7 +59,7 @@ function declareNewRow(row) {
 		row.removeClass("new-row");					//remove class new-row
 		row.removeAttr("data-id");					//remove useless attributes
 		row.removeAttr("data-name");
-		row.find('.id').html(id);					//add id value
+		
 				
 		//in case its a merchant, we have to activate the collapsing stuff
 		if(typeof(clonehidden) != 'undefined') { // add new row to end of table
@@ -98,11 +82,27 @@ function declareNewRow(row) {
 	//declare as editable
 	class_form.editable();
 	
-	class_form.editable('option', 'success', function(data) {
-		return success (data);
-	});
+	class_form.editable('option', 'validate',
+		function(v) {
+			var verif_type = $(this).attr('data-verif');
+			if(verif_type == 'required') {
+				if(v == '') { 
+					return 'Required field!'
+				}
+			} else if(verif_type == 'email') {
+				var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+				if( v == '' || !re.test(v)) {
+					return 'Invalid email';
+				}
+			} else if(verif_type == 'password') {
+				if(v.password != v.password_confirm) {
+					return 'Password and its confirmation must be equal !';
+				}
+			}
+		} 
+	);
 	
-	class_form.editable('option', 'send', 'always');
+	class_form.editable('option', 'mode', 'inline');
 	
 	//Switch
 	class_form.on('save', function(){
@@ -117,40 +117,24 @@ function declareNewRow(row) {
 		class_form.editable('submit', {
 			url: submit_button.attr('data-url'),
 			success: function(data) {
-				var msg = '';
-				var error = false;
-				var id, msg_success;
-				if(data.notes instanceof Array) {		
-					for(var key in data.notes) {				
-						if(data.notes[key].level == 'danger') {
-							error = true;
-							msg += data.notes[key].message + '<br/>';
-						} else if(data.notes[key].code == 'id') {
-							id = data.notes[key].message;
-						} else if(data.notes[key].code == 'success') {
-							msg_success = data.notes[key].message;
-						}
-					}
-				} else {
-					error = true;
-					msg += 'Bad response - Contact admin <br/>';
-				}
-				if(error) {
-					displayError(msg_div, msg);
-				} else {
-					class_form.editable('option', 'pk', id); 
+				if(data.success) {
+					var msg = 'Record successfully added.';
+					//msg += JSON.stringify(data, null, 2);
+					class_form.editable('option', 'pk', data.id); 
 										
-					cloneRow(class_form, row, id);
+					cloneRow(class_form, row, data.id);
 					
 					//button
 					row.find(".delete_row").removeClass("hide");
-					row.find(".delete_row").attr("data-pk", id);
+					row.find(".delete_row").attr("data-pk", data.id);
 					row.find(".delete_merchant").removeClass("hide");
-					row.find(".delete_merchant").attr("data-pk", id);
+					row.find(".delete_merchant").attr("data-pk", data.id);
 					
 					//Display message
-					displayTemporaryMessage(msg_div,msg_success);					
-				} 
+					displayTemporaryMessage(msg_div,msg);					
+				} else {
+					displayError(msg_div,data.msg);
+				}
 			},
 			error: function(data) {
 				var msg = '';
@@ -176,32 +160,18 @@ function deleteRecord(row, msg_div, url, pk, name) {
 		};                  
 
 	ajaxOptions.success = function(data) {
-		var msg = '';
-		var error = false;
-		var id, msg_success;
-		if(data.notes instanceof Array) {		
-			for(var key in data.notes) {				
-				if(data.notes[key].level == 'danger') {
-					error = true;
-					msg += data.notes[key].message + '<br/>';
-				} else if(data.notes[key].code == 'success') {
-					msg_success = data.notes[key].message;
-				}
-			}
-		} else {
-			error = true;
-			msg += 'Bad response - Contact admin <br/>';
-		}
-		if(!error) {			
+		if(data.success) {
+			var msg = 'Data successfully removed';
+			
 			//Display message
-			displayTemporaryMessage(msg_div,msg_success);
+			displayTemporaryMessage(msg_div,msg);
 			
 			//trigger delete event
 			var hidden = row.next('.new-row-collapse').first();
 			if(hidden != 'undefined') { hidden.remove() }
 			row.remove();
 		} else {
-			displayError(msg_div, msg);
+			displayError(msg_div,data.msg);
 		}
 	}
 				  
@@ -217,18 +187,14 @@ function deleteRecord(row, msg_div, url, pk, name) {
 //required part
 require(['jquery', 'bootstrap3-editable'], function($) {
 	$.fn.editable.defaults.mode = 'inline';
-	$.fn.editable.defaults.savenochange = true;
-	$.fn.editable.defaults.send = 'always';
-	$.fn.editable.defaults.onblur = 'submit';
 
 //when ready
 	$(document).ready(function() {
 		$('.editable-data').editable({
 			success: function(data) {
-				return success (data);
-			},
-			error: function(data) {
-				return 'Error contacting the server - Contact admin';
+				if(!data.success) {
+					return data.msg;
+				}
 			}
 		});     
 		
@@ -250,10 +216,6 @@ require(['jquery', 'bootstrap3-editable'], function($) {
 		
 		$('.new-row').each(function() {
 			declareNewRow($(this));
-		});
-		
-		var editor = new wysihtml5.Editor("wysihtml5-textarea", { // id of textarea element
-		  toolbar:      "wysihtml5-toolbar"
 		});
 	});
 });

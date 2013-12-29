@@ -21,11 +21,11 @@
 				<thead>
 					<tr>
 						<th width="1%">#</th>
-						<th width="15%"><a href="/admin/merchantmanagement/listing/nickname-<?php echo $this->tpl_vars['nickname_sort']; ?>/"><i class="<?php echo $this->tpl_vars['nickname_class']; ?>"></i> <?php echo WLang::get("nickname"); ?></a></th>
-						<th><a href="/admin/merchantmanagement/listing/name-<?php echo $this->tpl_vars['name_sort']; ?>/"><i class="<?php echo $this->tpl_vars['name_class']; ?>"></i> <?php echo WLang::get("name"); ?></a></th>
-						<th width="20%"><a href="/admin/merchantmanagement/listing/email-<?php echo $this->tpl_vars['email_sort']; ?>/"><i class="<?php echo $this->tpl_vars['email_class']; ?>"></i> <?php echo WLang::get("email"); ?></a></th>
+						<th width="15%"><a href="/m/admin/merchantmanagement/listing/nickname-<?php echo $this->tpl_vars['nickname_sort']; ?>/"><i class="<?php echo $this->tpl_vars['nickname_class']; ?>"></i> <?php echo WLang::get("nickname"); ?></a></th>
+						<th><a href="/m/admin/merchantmanagement/listing/name-<?php echo $this->tpl_vars['name_sort']; ?>/"><i class="<?php echo $this->tpl_vars['name_class']; ?>"></i> <?php echo WLang::get("name"); ?></a></th>
+						<th width="20%"><a href="/m/admin/merchantmanagement/listing/email-<?php echo $this->tpl_vars['email_sort']; ?>/"><i class="<?php echo $this->tpl_vars['email_class']; ?>"></i> <?php echo WLang::get("email"); ?></a></th>
 						<th width="15%">Password</th>
-						<th colspan="2" width="17%"><a href="/admin/merchantmanagement/listing/last_activity-<?php echo $this->tpl_vars['last_activity_sort']; ?>/<?php echo $this->tpl_vars['subURL']; ?>"><i class="<?php echo $this->tpl_vars['last_activity_class']; ?>"></i> <?php echo WLang::get("last_connection"); ?></a></th>
+						<th colspan="2" width="17%"><a href="/m/admin/merchantmanagement/listing/last_activity-<?php echo $this->tpl_vars['last_activity_sort']; ?>/<?php echo $this->tpl_vars['subURL']; ?>"><i class="<?php echo $this->tpl_vars['last_activity_class']; ?>"></i> <?php echo WLang::get("last_connection"); ?></a></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -35,26 +35,26 @@ foreach((array) $this->tpl_vars['users'] as $this->tpl_vars['count'] => $this->t
 					<tr>
 						<td><span data-toggle="collapse" data-target="#row<?php echo $this->tpl_vars['user']['id']; ?>" class="black accordion-toggle" title="<?php echo WLang::get("edit"); ?>"><i class="glyphicon glyphicon-plus"></i></span></td>
 						<td><strong>
-							<a href="#" class="editable-data" data-name="nickname" data-type="text" data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>" data-url="/admin/merchantmanagement/edit/"  data-verif="required">	
+							<a href="#" class="editable-data" data-name="nickname" data-type="text" data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>" data-url="/m/admin/merchantmanagement/edit/"  data-verif="required">	
 							<?php echo $this->tpl_vars['user']['nickname']; ?>
 							</a>
 						</strong></td>
 						<td><strong>
-							<a href="#" class="editable-data" data-name="name" data-type="text" data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>" data-url="/admin/merchantmanagement/edit/"  data-verif="required">	
+							<a href="#" class="editable-data" data-name="name" data-type="text" data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>" data-url="/m/admin/merchantmanagement/edit/"  data-verif="required">	
 							<?php echo $this->tpl_vars['user']['name']; ?>
 							</a>
 						</strong></td>
 						<td>
-							<a href="#" class="editable-data" data-name="email" data-type="text" data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>" data-url="/admin/merchantmanagement/edit/"  data-verif="email">	
+							<a href="#" class="editable-data" data-name="email" data-type="text" data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>" data-url="/m/admin/merchantmanagement/edit/"  data-verif="email">	
 							<?php echo $this->tpl_vars['user']['email']; ?>
 							</a>
 						</td>
 						<td>
-							<a href="#" class="editable-data" data-type="password" data-name="password"  data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>" data-url="/admin/merchantmanagement/edit/" data-verif="password">********</a>
+							<a href="#" class="editable-data" data-type="password" data-name="password"  data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>" data-url="/m/admin/merchantmanagement/edit/" data-verif="password">********</a>
 						</td>
 						<td><?php echo $this->tpl_vars['user']['last_activity']; ?></td>
 						<td>
-							<?php if ($this->tpl_vars['user']['id'] != $_SESSION['userid']): ?><span class="delete_merchant" data-url="/admin/merchantmanagement/delete/" data-name="merchant" data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>"><i class="glyphicon glyphicon-trash"></i></span><?php endif; ?>
+							<?php if ($this->tpl_vars['user']['id'] != $_SESSION['userid']): ?><span class="delete_merchant" data-url="/m/admin/merchantmanagement/delete/" data-name="merchant" data-pk="<?php echo $this->tpl_vars['user']['id_merchant']; ?>"><i class="glyphicon glyphicon-trash"></i></span><?php endif; ?>
 							
 						</td>				
 					</tr>
@@ -79,32 +79,32 @@ foreach((array) $this->tpl_vars['user']['addresses'] as $this->tpl_vars['count']
 	$hidden_counter2++; ?>	
 											<tr>
 												<td><b>
-												<a href="#" class="editable-data" data-name="address_name" data-type="text" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>" data-url="/admin/merchantmanagement/edit/"><?php echo $this->tpl_vars['address']['address_name']; ?></a>
+												<a href="#" class="editable-data" data-name="address_name" data-type="text" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>" data-url="/m/admin/merchantmanagement/edit/"><?php echo $this->tpl_vars['address']['address_name']; ?></a>
 												</b></td>
-												<td><a href="#" class="editable-data" data-name="address" data-type="textarea" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>" data-url="/admin/merchantmanagement/edit/"><?php echo $this->tpl_vars['address']['address']; ?></a>
+												<td><a href="#" class="editable-data" data-name="address" data-type="textarea" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>" data-url="/m/admin/merchantmanagement/edit/"><?php echo $this->tpl_vars['address']['address']; ?></a>
 												</td>
-												<td><a href="#" class="editable-data" data-name="opening_hours" data-type="textarea" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>" data-url="/admin/merchantmanagement/edit/"><?php echo $this->tpl_vars['address']['opening_hours']; ?></a></td>
-												<td><a href="#" class="editable-data" data-name="tel" data-type="text" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>" data-url="/admin/merchantmanagement/edit/"><?php echo $this->tpl_vars['address']['tel']; ?></a></td>
-												<td><span class="delete_row" data-url="/admin/merchantmanagement/delete/" data-name="address" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>"><i class="glyphicon glyphicon-trash"></i></span></td>
+												<td><a href="#" class="editable-data" data-name="opening_hours" data-type="textarea" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>" data-url="/m/admin/merchantmanagement/edit/"><?php echo $this->tpl_vars['address']['opening_hours']; ?></a></td>
+												<td><a href="#" class="editable-data" data-name="tel" data-type="text" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>" data-url="/m/admin/merchantmanagement/edit/"><?php echo $this->tpl_vars['address']['tel']; ?></a></td>
+												<td><span class="delete_row" data-url="/m/admin/merchantmanagement/delete/" data-name="address" data-pk="<?php echo $this->tpl_vars['address']['id_address']; ?>"><i class="glyphicon glyphicon-trash"></i></span></td>
 											</tr>
 											<?php endforeach; ?>
 											<tr class="new-row" data-name="address" data-id="<?php echo $this->tpl_vars['user']['id']; ?>">
 												<td>
 													<b>
-													<a href="#" class="add" data-name="address_name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="address_name" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 													</b>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="address" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="address" data-type="textarea" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="opening_hours" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="opening_hours" data-type="textarea" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="tel" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="tel" data-type="textarea" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
-												<td><span class="delete_row hide" data-url="/admin/merchantmanagement/delete/" data-name="address"><i class="glyphicon glyphicon-trash"></i></span>
-													<span class="submit" data-url="/admin/merchantmanagement/add/address/<?php echo $this->tpl_vars['user']['id_merchant']; ?>"><i class="glyphicon glyphicon-ok"></i></span>
+												<td><span class="delete_row hide" data-url="/m/admin/merchantmanagement/delete/" data-name="address"><i class="glyphicon glyphicon-trash"></i></span>
+													<span class="submit" data-url="/m/admin/merchantmanagement/add/address/<?php echo $this->tpl_vars['user']['id_merchant']; ?>"><i class="glyphicon glyphicon-ok"></i></span>
 												</td>
 											</tr>	
 											</tbody>
@@ -126,32 +126,32 @@ foreach((array) $this->tpl_vars['user']['contact_email'] as $this->tpl_vars['cou
 	$hidden_counter2++; ?>	
 											<tr>
 												<td>
-													<a href="#" class="editable-data" data-name="contacts_name" data-type="text" data-pk="<?php echo $this->tpl_vars['mail']['id_email']; ?>" data-url="/admin/merchantmanagement/edit/">
+													<a href="#" class="editable-data" data-name="contacts_name" data-type="text" data-pk="<?php echo $this->tpl_vars['mail']['id_email']; ?>" data-url="/m/admin/merchantmanagement/edit/">
 														<?php echo $this->tpl_vars['mail']['email_name']; ?>
 													</a>
 												</td>
 												<td>
-													<a href="#" class="editable-data" data-name="contacts_email" data-type="text" data-pk="<?php echo $this->tpl_vars['mail']['id_email']; ?>" data-url="/admin/merchantmanagement/edit/">	
+													<a href="#" class="editable-data" data-name="contacts_email" data-type="text" data-pk="<?php echo $this->tpl_vars['mail']['id_email']; ?>" data-url="/m/admin/merchantmanagement/edit/">	
 														<?php echo $this->tpl_vars['mail']['email']; ?>
 													</a>
 												</td>
 												<td>
-													<span class="delete_row" data-url="/admin/merchantmanagement/delete/" data-name="email" data-pk="<?php echo $this->tpl_vars['mail']['id_email']; ?>"><i class="glyphicon glyphicon-trash"></i></span>
+													<span class="delete_row" data-url="/m/admin/merchantmanagement/delete/" data-name="email" data-pk="<?php echo $this->tpl_vars['mail']['id_email']; ?>"><i class="glyphicon glyphicon-trash"></i></span>
 												</td>
 											</tr>
 											<?php endforeach; ?>	
 											<tr class="new-row" data-name="email" data-id="<?php echo $this->tpl_vars['user']['id']; ?>">
 												<td>
-													<a href="#" class="add" data-name="contacts_name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required">
+													<a href="#" class="add" data-name="contacts_name" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="required">
 													</a>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="contacts_email" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="email">	
+													<a href="#" class="add" data-name="contacts_email" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="email">	
 													</a>
 												</td>
 												<td>
-													<span class="delete_row hide" data-url="/admin/merchantmanagement/delete/" data-name="email"><i class="glyphicon glyphicon-trash"></i></span>
-													<span class="submit" data-url="/admin/merchantmanagement/add/contacts/<?php echo $this->tpl_vars['user']['id_merchant']; ?>"><i class="glyphicon glyphicon-ok"></i></span>
+													<span class="delete_row hide" data-url="/m/admin/merchantmanagement/delete/" data-name="email"><i class="glyphicon glyphicon-trash"></i></span>
+													<span class="submit" data-url="/m/admin/merchantmanagement/add/contacts/<?php echo $this->tpl_vars['user']['id_merchant']; ?>"><i class="glyphicon glyphicon-ok"></i></span>
 												</td>
 											</tr>	
 										</tbody>
@@ -164,24 +164,24 @@ foreach((array) $this->tpl_vars['user']['contact_email'] as $this->tpl_vars['cou
 					<tr class="new-row" data-name="merchant" data-id="<?php echo $this->tpl_vars['user']['id']; ?>" id="row_new_email_<?php echo $this->tpl_vars['user']['id']; ?>">
 						<td><span data-toggle="collapse" class="black accordion-toggle" title="<?php echo WLang::get("edit"); ?>"><i class="glyphicon glyphicon-plus"></i></span></td>
 						<td><strong>
-							<a href="#" class="add" data-name="nickname" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required">	
+							<a href="#" class="add" data-name="nickname" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="required">	
 							</a>
 						</strong></td>
 						<td><strong>
-							<a href="#" class="add" data-name="name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required">	
+							<a href="#" class="add" data-name="name" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="required">	
 							</a>
 						</strong></td>
 						<td>
-							<a href="#" class="add" data-name="email" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="email">	
+							<a href="#" class="add" data-name="email" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="email">	
 							</a>
 						</td>
 						<td>
-							<a href="#" class="add" data-name="password" data-type="password" data-url="/admin/merchantmanagement/edit/" data-verif="password"></a>
+							<a href="#" class="add" data-name="password" data-type="password" data-url="/m/admin/merchantmanagement/edit/" data-verif="password"></a>
 						</td>
 						<td></td>
 						<td>
-							<span class="delete_merchant hide" data-url="/admin/merchantmanagement/delete/" data-name="merchant"><i class="glyphicon glyphicon-trash"></i></span>
-							<span class="submit" data-url="/admin/merchantmanagement/add/merchant/"><i class="glyphicon glyphicon-ok"></i></span>							
+							<span class="delete_merchant hide" data-url="/m/admin/merchantmanagement/delete/" data-name="merchant"><i class="glyphicon glyphicon-trash"></i></span>
+							<span class="submit" data-url="/m/admin/merchantmanagement/add/merchant/"><i class="glyphicon glyphicon-ok"></i></span>							
 						</td>
 					</tr>
 					<tr class="new-row-collapse">
@@ -203,20 +203,20 @@ foreach((array) $this->tpl_vars['user']['contact_email'] as $this->tpl_vars['cou
 											<tr class="new-row" data-name="address" data-id="<?php echo $this->tpl_vars['user']['id']; ?>">
 												<td>
 													<b>
-													<a href="#" class="add" data-name="address_name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="address_name" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 													</b>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="address" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="address" data-type="textarea" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="opening_hours" data-type="textarea" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="opening_hours" data-type="textarea" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="tel" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<a href="#" class="add" data-name="tel" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
-												<td><span class="delete_row hide" data-url="/admin/merchantmanagement/delete/" data-name="address"><i class="glyphicon glyphicon-trash"></i></span>
-													<span class="submit" data-url="/admin/merchantmanagement/add/address/"><i class="glyphicon glyphicon-ok"></i></span>
+												<td><span class="delete_row hide" data-url="/m/admin/merchantmanagement/delete/" data-name="address"><i class="glyphicon glyphicon-trash"></i></span>
+													<span class="submit" data-url="/m/admin/merchantmanagement/add/address/"><i class="glyphicon glyphicon-ok"></i></span>
 												</td>
 											</tr>	
 											</tbody>
@@ -235,16 +235,16 @@ foreach((array) $this->tpl_vars['user']['contact_email'] as $this->tpl_vars['cou
 										<tbody>	
 											<tr class="new-row" data-name="email" data-id="<?php echo $this->tpl_vars['user']['id']; ?>">
 												<td>
-													<a href="#" class="add" data-name="contacts_name" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="required">
+													<a href="#" class="add" data-name="contacts_name" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="required">
 													</a>
 												</td>
 												<td>
-													<a href="#" class="add" data-name="contacts_email" data-type="text" data-url="/admin/merchantmanagement/edit/" data-verif="email">	
+													<a href="#" class="add" data-name="contacts_email" data-type="text" data-url="/m/admin/merchantmanagement/edit/" data-verif="email">	
 													</a>
 												</td>
 												<td>
-													<span class="delete_row hide" data-url="/admin/merchantmanagement/delete/" data-name="email"><i class="glyphicon glyphicon-trash"></i></span>
-													<span class="submit" data-url="/admin/merchantmanagement/add/contacts/"><i class="glyphicon glyphicon-ok"></i></span>
+													<span class="delete_row hide" data-url="/m/admin/merchantmanagement/delete/" data-name="email"><i class="glyphicon glyphicon-trash"></i></span>
+													<span class="submit" data-url="/m/admin/merchantmanagement/add/contacts/"><i class="glyphicon glyphicon-ok"></i></span>
 												</td>
 											</tr>	
 										</tbody>

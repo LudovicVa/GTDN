@@ -35,6 +35,7 @@ class Editor {
 				} else {
 					$this->success('save_success');
 				}
+				
 				$this->dumpNotes();
 			}
 		}

@@ -72,7 +72,7 @@ class DealsManagementAdminController extends WController {
 	**/	
 	protected function edit(array $params) {
 		$editor = WHelper::load('Editor');
-		if(!isset($_POST['pk']) || !isset($_POST['name']) || !$value =  $_POST['value']) {
+		if(!isset($_POST['pk']) || !isset($_POST['name']) || !isset($_POST['value'])) {
 			WNote::error('invalid_request', WLang::get('invalid_request'));
 		} else {
 			$deal_id = $_POST['pk'];
@@ -190,14 +190,16 @@ class DealsManagementAdminController extends WController {
 			case 'deal':
 				$id = $this->addDeal($_POST);
 				if(isset($id)) {
-					$this->view->success($id);
+					WNote::success('id', $id);
+					WNote::success('success', WLang::get('deal_successfully_added'));
+				} else {
+					WNote::error('problem_while_validating', 'problem_while_validating');
 				}
 				break;
 			default:
-				$this->view->error("Command Unrecognised");
+				WNote::error('command_unrecognised', 'command_unrecognised');
 				break;
 		}
-		$this->view->respond();
 	}
 	
 	protected function delete(array $params) {		
@@ -205,17 +207,16 @@ class DealsManagementAdminController extends WController {
 		switch($type) {
 			case 'deal':
 				$id = $_POST['pk'];
-				if($this->model->deleteDeal($id)) {
-					$this->view->success();
+				if($this->model->deleteDeal($id)) {			
+					WNote::success('success', WLang::get('deal_successfully_delete'));
 				} else {
-					$this->view->error("Unknown error. Please retry.");
+					WNote::error('unknown_error', WLang::get('unknown_error'));
 				}
 				break;
 			default:
-				$this->view->error("Command Unrecognised");
+				WNote::error('unrecognized_command', WLang::get('unrecognized_command'));
 				break;
 		}
-		$this->view->respond();
 	}
 	
 	private function isName($name) {
@@ -223,19 +224,19 @@ class DealsManagementAdminController extends WController {
 	}
 	
 	private function addDeal(array $params) {
-		error_log(serialize($params));
+	
 		if(!$this->isName($params['deal_name'])) {
-			$this->view->error(WLang::get('deal_name_required'));
+			WNote::error('deal_name_required', 'deal_name_required');
 			return;
 		}
 		
-		if(!$this->model->isMerchantId($params['merchant']))	 {
-			$this->view->error(WLang::get('merchant_unknown'));
+		if(!$this->model->isMerchantId($params['merchant'])) {
+			WNote::error('merchant_unknown', 'merchant_unknown');
 			return;
 		}
 		
 		if(!is_numeric($params['price']) || !is_numeric($params['original_price'])) {
-			$this->view->error(WLang::get('price_not_a_number'));
+			WNote::error('price_not_a_number', 'price_not_a_number');
 			return;
 		}
 		
