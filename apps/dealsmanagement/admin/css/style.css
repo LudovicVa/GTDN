@@ -5,3 +5,24 @@
 .input-very-small {
 	width: 70px !important;
 }
+
+.form-inline .form-group{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.wysihtml5-sandbox {
+  width: 100%!important;
+  /*height: 540px!important;*/
+}
+
+.modal {
+    min-width: 1000px;
+    /* must be half of the width, minus scrollbar on the left (30px) */
+    margin-left: -500px;
+}
+
+.modal-body {
+	max-height: 800px;
+	height: 600px;
+}

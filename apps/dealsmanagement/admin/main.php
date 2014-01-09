@@ -58,20 +58,23 @@ class DealsManagementAdminController extends WController {
 	 */	
 	protected function merchants(array $params) {
 		$merchants = $this->model->getMerchants();
-		
+		header('Content-Type: application/json');
+		$result = array();
 		foreach($merchants as $key=>$merchant) {
 			$value = $merchant['id_merchant'];
 			$text = $merchant['name'];
-			$this->view->push_content($key, array('value' => $value, 'text' => $text));
+			$result[$value] = $text;
 		}
-		$this->view->respond();
+		echo json_encode($result);
+		exit(0);
 	}
 	
 	/**
 	* Editing
 	**/	
 	protected function edit(array $params) {
-		$editor = WHelper::load('Editor');
+		header('Content-Type: application/json');
+		$editor = WHelper::load('editor');
 		if(!isset($_POST['pk']) || !isset($_POST['name']) || !isset($_POST['value'])) {
 			WNote::error('invalid_request', WLang::get('invalid_request'));
 		} else {
@@ -185,6 +188,7 @@ class DealsManagementAdminController extends WController {
 	}
 	
 	protected function add(array $params) {
+		header('Content-Type: application/json');
 		$type = $params[0];
 		switch($type) {
 			case 'deal':
@@ -202,7 +206,8 @@ class DealsManagementAdminController extends WController {
 		}
 	}
 	
-	protected function delete(array $params) {		
+	protected function delete(array $params) {	
+		header('Content-Type: application/json');	
 		$type = $_POST['name'];
 		switch($type) {
 			case 'deal':
@@ -241,6 +246,119 @@ class DealsManagementAdminController extends WController {
 		}
 		
 		return $this->model->createDeal($params);
+	}
+	
+//email
+	/**
+	 * @var WTemplate WTemplate instance
+	 */
+	private static $tpl;
+	
+	public function email_edit(array $params) {
+		if (WRequest::hasData()) {
+			$received = WRequest::getAssoc(array('id', 'html_body'));
+			
+			//If not empty id and numeric, edit or display specific email
+			if(!empty($received['id']) && is_numeric($received['id'])) {				
+				$model = $this->retrieveDealInfo($received['id']);
+				$model['id'] = $received['id'];
+				
+				$model['title'] = 'Customize email for the deal : ' . $model['deal_name'];	
+				
+				//If new body submitted, treat it
+				if(!empty($received['html_body'])) {	
+					//first thing first, put back the body into the form
+					$body = $received['html_body'];	
+					
+					//Check if body contains {$voucher}
+					$pos = strpos($received['html_body'], "{\$voucher}");
+					if($pos === false) {
+						//if note, don't save
+						WNote::error("voucher_not_present", WLang::get("voucher_not_present"));
+					} else {
+						$subject = "Get The Deal Now - Get The Deal Now!";
+						//alright, we can save !
+						if($this->model->updateEmail2Customer($model['id'], $subject, $received['html_body'])) {
+							WNote::success("successfully_saved", WLang::get("successfully_saved"));
+						} else {
+							WNote::error("unknown_error_during_mail_edtion", WLang::get("unknown_error_during_mail_edtion"));
+						}
+					}
+				} else {					
+					$body = $model['email2customer']['email_body'];
+				}
+				
+				//Prepare Template compiler
+				if (empty(self::$tpl)) {
+					self::$tpl = WSystem::getTemplate();
+				}
+
+				self::$tpl->pushContext();
+
+				// Assign View variables
+				$model['voucher'] = "<b>{\$voucher}</b>";
+				$model['firstname'] = "<b>{\$firstname}</b>";
+				$model['lastname'] = "<b>{\$lastname}</b>";
+				self::$tpl->assign($model);
+				
+				if (substr($body, -5) === '.html' && file_exists(WITY_PATH.$body)) {
+					// Use system directory separator
+					if (DS != '/') {
+						$params['body'] = str_replace('/', DS, $params['body']);
+					}
+					$body = self::$tpl->parse($body);
+				} else {
+					$body = self::$tpl->parseString($body);
+				}
+				
+				$body = trim(preg_replace('/\s+/', ' ', $body));
+				$body = preg_replace('#(<script.*?>).*?(</script>)#', '', $body);
+				$model['email_body'] = $body;
+			
+				self::$tpl->popContext();
+			}
+			
+			return $model;
+		} else {				
+			//Default email
+			$model['title'] = 'Edit default email';				
+			$model = $this->model->retrieveDefaultEmail();
+			
+			return $model;
+		}
+	}
+	
+	private function retrieveDealInfo($id) {
+		return $this->model->getDealInfo($id);
+	}
+	
+	/*****************************************
+	 * WTemplateCompiler's new handlers part *
+	 *****************************************/
+	/**
+	 * Handles the {mail_action} node in WTemplate
+	 * {mail_action} gives access to email action
+	 *
+	 * Example: {action /news/admin/publish/{$news.id}}
+	 * Replaced by: /mail/[hash]
+	 *
+	 * @param string $args language identifier
+	 * @return string php string that calls the WLang::get()
+	 */
+	public static function compile_mail_action($args) {
+		if (!empty($args)) {
+			$url = $args;
+
+			// Replace the template variables in the string
+			$url = WTemplateParser::replaceNodes($url, create_function('$s', "return '\".'.WTemplateCompiler::parseVar(\$s).'.\"';"));
+
+			// Build final php lang string
+			if (strlen($url) > 0) {
+				return '<?php echo MailController::storeAction("'.$url.'"); ?>';
+			}
+		}
+
+		return '';
 	}
 }
 

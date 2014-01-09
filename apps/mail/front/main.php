@@ -152,7 +152,7 @@ class MailController extends WController {
 			self::$expiration = array('expires' => $expires_date, 'one-time' => '');
 
 		}
-
+		
 		if (empty($params['response_callback'])) {
 			$params['response_callback'] = '';
 		}
@@ -175,7 +175,7 @@ class MailController extends WController {
 		$this->phpmailer->isHTML(true);
 
 		WTemplateCompiler::registerCompiler('mail_action', array('MailController', 'compile_mail_action'));
-
+		
 		// Find mode : only defaults or defaults + while(specifics)
 		if (!empty($params['specifics']) && is_array($params['specifics'])) {
 			foreach ($params['specifics'] as $spec) {
@@ -291,7 +291,7 @@ class MailController extends WController {
 
 			$this->phpmailer->msgHTML(self::$tpl->parse($params['body']));
 		} else {
-			$this->phpmailer->msgHTML(self::$tpl->parseString($params['body']));
+			$this->phpmailer->Body = self::$tpl->parseString($params['body']);
 		}
 
 		if (!$this->phpmailer->send()) {

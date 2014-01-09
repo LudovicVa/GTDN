@@ -1,0 +1,38 @@
+<div class="wity-app wity-app-user wity-action-listing">
+	<div class="row">
+		<form method="post" enctype="multipart/form-data" action="/admin/transactions/manualtransaction/" class="form-horizontal" >
+			<div class="col-md-12">		
+				 <div class="form-group">
+					<label for="id_deal" class="col-sm-2 control-label">Deal</label>
+					<div class="col-sm-10">
+						<select class="form-control" name="id_deal">
+							{for $count, $deal in $deals}<option value="{$deal.id_deal}" {if(empty({$id_deal}) && {$id_deal} == {$deal.id_deal})}selected{/if}>{$deal.deal_name}</option>
+							{/for}
+						</select>					  
+					</div>
+				  </div>
+				  <div class="form-group">
+					<label for="first_name" class="col-sm-2 control-label">Firstname</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="first_name" id="first_name" placeholder="Firstname" {if(isset({$first_name}))}value="{$first_name}"{/if}>
+					</div>
+				  </div>
+				  <div class="form-group">
+					<label for="last_name" class="col-sm-2 control-label">Lastname</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="last_name" id="last_name" placeholder="Lastname" {if(isset({$last_name}))}value="{$last_name}"{/if}>
+					</div>
+				  </div>
+				  <div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+					  <button type="submit" class="btn btn-default">Set test emails</button>
+					</div>
+				  </div>
+			</div>
+		</form>
+	</div>
+
+	<div id="modal_delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_delete" aria-hidden="true"></div>
+	
+</div>
+</div>

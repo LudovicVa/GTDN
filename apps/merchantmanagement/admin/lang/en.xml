@@ -11,6 +11,8 @@
 	<item id="firstname">Firstname</item>
 	<item id="lastname">Lastname</item>
 	<item id="name">Shop name</item>
+	<item id="contact_name">Email name</item>
+	<item id="contact_email">Contact email</item>
 	<item id="register_time">Registering time</item>
 	<item id="last_connection">Last connection</item>
 	<item id="edit">Edit</item>

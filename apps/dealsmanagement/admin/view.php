@@ -17,7 +17,6 @@ class DealsManagementAdminView extends WView {
 		parent::__construct();
 
 		// CSS for all views
-		$this->assign('css', '/libraries/bootstrap3-editable/css/bootstrap-editable.css');
 		$this->assign('css', '/apps/dealsmanagement/admin/css/style.css');
 	}
 
@@ -27,14 +26,14 @@ class DealsManagementAdminView extends WView {
 	 * @param array $model
 	 */
 	public function listing(array $model) {
-		$this->assign('css', "/libraries/wysihtml5-bootstrap/bootstrap-wysihtml5-0.0.2.css");
-		$this->assign('require', 'apps!news/add_or_edit');
-		$this->assign('require', 'wysihtml5');
-		$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/moment.min.js');
-		$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/password_type.js');
+		$this->assign('css', '/libraries/bootstrap3-editable/css/bootstrap-editable.css');
+		
+		$this->assign('require', 'gtdn/moment.min');
+		$this->assign('require', 'gtdn/editable-table');
 		$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/script.js');
+		
+		$this->assign('css', '/libraries/bootstrap-switch/css/bootstrap-switch.min.css');
 		$this->assign('deals', $model['deals']);
-		$this->assign($model['sorting_tpl']);
 		
 		$this->assign('base_url', WRoute::getBase());
 		
@@ -47,65 +46,14 @@ class DealsManagementAdminView extends WView {
 		$this->assign('pagination', $pagination->getHTML());
 	}
 	
-		/**
-	 * @var array Stores the response which will be sent in json to the client 
-	 */
-	private $response = array();
-	
-	public function error($message) {
-		$this->push_content('success', false);
-		$this->push_content('msg', $message);
-	}
-	
-	public function success($id = null) {
-		$this->push_content('success', true);
-		if($id != null) {
-			$this->push_content('id', $id);
-		}
-	}
-	
-	private function push_message($state, $level, $id, $head_message, $message) {
-		if(empty($this->response) || !is_array($this->response)) {
-			$this->response = array();
-		}
+	public function email_edit(array $model) {
+		$this->assign('css', "/libraries/wysihtml5-bootstrap/bootstrap-wysihtml5-0.0.2.css");
+		//$this->assign('js', '/apps/dealsmanagement/admin/js/script.js');
+		//$this->assign('js', "/libraries/ckeditor/ckeditor.js");
+		//$this->assign('require', 'wysihtml5');
 		
-		if(empty($this->response[$level]) || !is_array($this->response[$level])) {
-			$this->response[$level] = array();
-		}
-		
-		if(empty($this->response[$level][$id]) || !is_array($this->response[$level][$id])) {
-			$this->response[$level][$id] = array();
-		}
-		
-		$this->response[$level][$id][$state][] = array('head_message' => $head_message, 'message' => $message);
-	}
-	
-	public function push_content($id, $data) {
-		if(empty($this->response) || !is_array($this->response)) {
-			$this->response = array();
-		}
-		
-		$this->response[$id] = $data;
-	}
-	
-	public function respond() {
-		header('Content-Type: application/json');
-		$final_response = array_map('self::prepare_array', $this->response);
-		$final_response = html_entity_decode(json_encode($final_response));
-		echo $final_response;		
-		exit(0);
-	}
-	
-	private function prepare_array($val = '') {
-		if(is_numeric($val)) {
-			$val = strval($val);
-		}
-		
-		if(is_string($val)) {
-			$val = htmlentities($val);
-		}
-		
-		return $val;
+		//$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/script.js');
+		$this->assign($model);
 	}
 }
 

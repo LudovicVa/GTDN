@@ -20,7 +20,7 @@ class UserAdminController extends WController {
 	 * @return array Model
 	 */
 	protected function listing(array $params) {
-		$n = 1; // Number of users per page
+		$n = 30; // Number of users per page
 		
 		// Admin check
 		$admin_check = WRequest::get('admin_check');

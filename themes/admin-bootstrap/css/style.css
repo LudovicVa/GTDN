@@ -16,3 +16,8 @@ a.black {
 		width: 100%;
 	}
 }
+
+.wity-action-form-signin {
+	max-width: 300px;
+	margin:auto;
+}

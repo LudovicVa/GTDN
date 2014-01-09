@@ -22,6 +22,7 @@
 	<!-- Admin actions -->
 	<admin>
 		<action default="default" description="List of deals">listing</action>
+		<action default="default" menu="false">email_edit</action>
 		<action description="Edit" menu="false">edit</action>
 		<action description="Add" menu="false">add</action>
 		<action description="Merchants" menu="false">merchants</action>

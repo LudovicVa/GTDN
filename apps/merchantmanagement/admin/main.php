@@ -54,161 +54,19 @@ class MerchantManagementAdminController extends WController {
 	}
 	
 	/**
-	* Listing
-	**	
-	protected function edit(array $params) {
-		$merchant_id = $_POST['pk'];
-		$type = $_POST['name'];
-		$value =  $_POST['value'];
-		switch($type) {
-			case 'name':
-				if($this->isName($value)) {
-					if($this->model->updateName($merchant_id, $value)) {
-						$this->view->success();
-					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
-				} else {
-					$this->view->error('Required');
-				}
-				break;	
-			case 'nickname':
-				if(!is_string($e = $this->model->checkNickname($value))) {
-					$user_id = $this->model->getUserIdByMerchant($merchant_id);
-					if($user_id >= 0) {
-						if($this->model->updateUser($user_id, array('nickname' => $value))) {
-							$this->view->success();
-						} else {
-							$this->view->error('Unknown error. Please retry');
-						}
-					} else {
-						$this->view->error($user_id);
-					}					
-				} else {
-					$this->view->error(WLang::get($e));
-				}
-				break;
-			case 'password':
-				if($this->isName($value)) {
-					if($value['password'] != $value['password_confirm']) {
-						$this->view->error('Password must be equals.');
-					} else {
-						$user_id = $this->model->getUserIdByMerchant($merchant_id);
-						if($user_id >= 0) {
-							if($this->model->updateUser($user_id, array('password' => sha1($value['password'])))) {
-								$this->view->success();
-							} else {
-								$this->view->error('Unknown error. Please retry.');
-							}
-						} else {
-							$this->view->error($user_id);
-						}	
-					}
-				} else {
-					$this->view->error('The password can not be empty.');
-				}
-				break;	
-			case 'email':
-				if(!is_string($e = $this->model->checkEmail($value))) {
-					$user_id = $this->model->getUserIdByMerchant($merchant_id);
-					if($user_id >= 0) {
-						if($this->model->updateUser($user_id, array('email' => $value))) {
-							$this->view->success();
-						} else {
-							$this->view->error('Unknown error. Please retry');
-						}
-					} else {
-						$this->view->error($user_id);
-					}	
-				} else {
-					$this->view->error(WLang::get($e));
-				}
-				break;
-			case 'contacts_email':
-				if($this->isEmail($value)) {
-					if($this->model->updateContactEmail($merchant_id, $value)) {
-						$this->view->success();
-					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
-				} else {
-					$this->view->error('Doesn\'t look like an email...');
-				}
-				break;
-			case 'contacts_name':
-				if($this->isName($value)) {
-					if($this->model->updateContactName($merchant_id, $value)) {
-						$this->view->success();
-					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
-				} else {
-					$this->view->error('Required');
-				}
-				break;
-			case 'address_name':
-				if($this->isName($value)) {
-					if($this->model->updateAddressName($merchant_id, $value)) {
-						$this->view->success();
-					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
-				} else {
-					$this->view->error('Required');
-				}
-				break;
-			case 'address':
-				if($this->isName($value)) {
-					if($this->model->updateAddress($merchant_id, $value)) {
-						$this->view->success();
-					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
-				} else {
-					$this->view->error('Required');
-				}
-				break;
-			case 'opening_hours':
-				if($this->isName($value)) {
-					if($this->model->updateOpeningHours($merchant_id, $value)) {
-						$this->view->success();
-					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
-				} else {
-					$this->view->error('Required');
-				}
-				break;
-			case 'tel':
-				if($this->isName($value)) {
-					if($this->model->updateTel($merchant_id, $value)) {
-						$this->view->success();
-					} else {
-						$this->view->error('Unknown error. Please retry');
-					}
-				} else {
-					$this->view->error('Required');
-				}
-				break;
-			default:
-				$this->view->error('Unknown field');
-				break;
-		}		
-		$this->view->respond();
-	}
-	
-	/**
 	* Editing
 	**/	
 	protected function edit(array $params) {
-		$editor = WHelper::load('Editor');
+		header('Content-Type: application/json');
+		$editor = WHelper::load('editor');
 		if(!isset($_POST['pk']) || !isset($_POST['name']) || !isset($_POST['value'])) {
 			WNote::error('invalid_request', WLang::get('invalid_request'));
 		} else {
-			$deal_id = $_POST['pk'];
-			$edit = $this->model->isMerchantId($deal_id);
+			$merchant_id = $_POST['pk'];
+			//$edit = $this->model->isMerchantId($merchant_id); TODO : CHECK IF IT IS A VALID ADDRESS ID...
+			$edit = $merchant_id != null && is_numeric($merchant_id);
 			if($edit) {
-				$editor->edit($this, array(array('type'=>$_POST['name'], 'value'=>$_POST['value'])), $deal_id);
+				$editor->edit($this, array(array('type'=>$_POST['name'], 'value'=>$_POST['value'])), $merchant_id);
 			} else {
 				$editor->edit($this, array(array('type'=>$_POST['name'], 'value'=>$_POST['value'])));
 			}
@@ -261,6 +119,7 @@ class MerchantManagementAdminController extends WController {
 					}
 					break;
 				case 'contacts_email':
+					error_log(serialize($data));
 					if(!$this->model->updateContactEmail($merchant_id, $value)) {
 						array_push($errors, $editor->generateError('contact_email_not_saved'));
 					}
@@ -351,13 +210,15 @@ class MerchantManagementAdminController extends WController {
 	}
 	
 	public function isValidRecordId($id, $editor) {
-		if(!$this->model->isMerchantId($id)) {
+	//TODO case addresses, etc...
+		/*if(!$this->model->isMerchantId($id)) {
 			return array($editor->generateError('merchant_does_not_exist'));
-		}
+		}*/
 		return array();
 	}
 	
 	protected function add(array $params) {
+		header('Content-Type: application/json');
 		$type = $params[0];
 		switch($type) {
 			case 'contacts':
@@ -408,6 +269,7 @@ class MerchantManagementAdminController extends WController {
 	}
 	
 	protected function delete(array $params) {		
+		header('Content-Type: application/json');
 		$type = $_POST['name'];
 		switch($type) {
 			case 'address':
@@ -458,18 +320,6 @@ class MerchantManagementAdminController extends WController {
 		return !empty($email) && preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i', $email);
 	}
 	
-	private function areEmails($data) {
-		if(!is_array($data)) {
-			return isEmail($email);
-		}
-		foreach($data as $email) {
-			if(!$this->isEmail($email)) {	
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	private function prepare_array($val = '') {
 		if(is_numeric($val)) {
 			$val = strval($val);
@@ -483,7 +333,6 @@ class MerchantManagementAdminController extends WController {
 	}
 	
 	private function addMerchant(array $params) {
-		//error_log(is_string($this->model->checkNickname($params['nickname'])));
 		$error = false;
 		if(is_string($e = $this->model->checkNickname(isset($params['nickname']) ? $params['nickname'] : ''))) {
 			WNote::error('nickname', WLang::get($e));
@@ -510,6 +359,7 @@ class MerchantManagementAdminController extends WController {
 		}
 		return false;
 	}
+	
 }
 
 ?>

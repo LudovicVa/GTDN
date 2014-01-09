@@ -851,9 +851,9 @@ Editableform is linked with one of input types, e.g. 'text', 'select' etc.
            }           
 
            //change wysihtml5 to textarea for jquery UI and plain versions
-           if(type === 'wysihtml5' && !$.fn.editabletypes[type]) {
-               type = 'textarea';
-           }
+           /*if(type === 'wysihtml5' && !$.fn.editabletypes[type]) {
+               //type = 'textarea';
+           }*/
 
            //create input of specified type. Input will be used for converting value, not in form
            if(typeof $.fn.editabletypes[type] === 'function') {

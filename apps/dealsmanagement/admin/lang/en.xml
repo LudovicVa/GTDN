@@ -11,7 +11,9 @@
 	<item id="delete">Delete</item>
 	<item id="cancel">Cancel</item>
 	
-	<!-- Confirmation -->
-	<item id="confirmation_title">Do you really wish to continue ?</item>
-	<item id="confirmation_body">Do you really wish to delete this deal and all the data related to it ?</item>
+	<!-- email edit -->
+	<item id="intro_email_edit">This email will be sent when a customer orders the deal "%s" ! You can customize it as much as you want !</item>
+	<item id="note_email_edit">You can use those variables</item> 
+	<item id="note_voucher_only_once">Please note you have to use at least once the voucher variable !</item>
+	<item id="voucher_not_present">Please note you have to use at least once the {$voucher} variable... Otherwise the customer won't be able to claim his deal !</item>
 </lang>

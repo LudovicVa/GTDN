@@ -188,8 +188,6 @@ class WResponse {
 		// Store the notes
 		$model['notes'] = WNote::get('*');
 		
-		header('Content-Type: application/json');
-		
 		echo str_replace('\\/', '/', json_encode($model));
 
 		return true;

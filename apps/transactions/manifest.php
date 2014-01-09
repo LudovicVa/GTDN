@@ -17,11 +17,12 @@
 	<permission name="config" />
 	
 	<!-- Front actions -->
-	<action default="default" alias="connexion">login</action>
+	<action default="default">ipn</action>
 	
 	<!-- Admin actions -->
 	<admin>
 		<action default="default" description="List of transactions">listing</action>
+		<action default="default" description="Insert a transaction">manualTransaction</action>
 		<action description="Edit" menu="false">edit</action>
 		<action description="Check" menu="false">check</action>
 		<action description="Add" menu="false">add</action>

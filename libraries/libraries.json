@@ -10,7 +10,8 @@
 		"bootstrap3-editable": "bootstrap3-editable/js/bootstrap-editable",
 		"wysihtml5": "wysihtml5-bootstrap/wrapper",
 		"wysihtml5-bootstrap-plugin": "wysihtml5-bootstrap/bootstrap-wysihtml5-0.0.2.min",
-		"wysihtml5-core": "wysihtml5-bootstrap/wysihtml5.min"
+		"wysihtml5-core": "wysihtml5-bootstrap/wysihtml5.min",
+		"bootstrap-switch": "bootstrap-switch/js/bootstrap-switch"
 	},
 	"shim": {
 		"bootstrap": ["jquery"],
@@ -18,7 +19,8 @@
 		"wysihtml5-bootstrap-plugin": ["wysihtml5-core"],
 		"bootstrap-modal-core": ["jquery", "bootstrap", "bootstrap-modal-2.2.0/js/bootstrap-modalmanager"],
 		"bootstrap3-editable": ["jquery", "bootstrap", "wysihtml5-core", "wysihtml5-bootstrap-plugin", "wysihtml5"],
-		"bootstrap-datetimepicker": ["jquery", "bootstrap"]
+		"bootstrap-datetimepicker": ["jquery", "bootstrap"],
+		"bootstrap-switch": ["jquery"]
 	},
 	"waitSeconds": 15
 }

@@ -20,6 +20,7 @@ class ContactController extends WController {
 
 		if (WRequest::hasData()) {
 			$data = WRequest::getAssoc(array('from_name', 'from_company', 'from_email', 'email_subject', 'email_message'));
+			
 			$errors = array();
 
 			/**
@@ -44,6 +45,7 @@ class ContactController extends WController {
 			}
 
 			$data['email_message'] = nl2br($data['email_message']);
+			
 			/**
 			 * END VARIABLES CHECKING
 			 */
@@ -52,6 +54,7 @@ class ContactController extends WController {
 				if (!is_null($user_id)) {
 					$data['userid'] = $user_id;
 				}
+				
 
 				$config = $this->model->getConfig();
 
@@ -96,7 +99,7 @@ class ContactController extends WController {
 							)
 						)
 					);
-
+	
 					$mail_app = WRetriever::getModel('mail', $mail);
 
 					if (!$this->model->addMail($data)) {

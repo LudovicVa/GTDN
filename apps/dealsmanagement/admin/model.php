@@ -1,31 +1,27 @@
 <?php
 /**
- * User Application - Admin Model
+ * Deals Management Application - Admin Model
  */
 
 defined('WITYCMS_VERSION') or die('Access denied');
 
 /**
- * Include Front Model for inheritance
+ * Include Transactions Model for inheritance of getDealInfo
  */
-include_once APPS_DIR.'user'.DS.'admin'.DS.'model.php';
+include_once APPS_DIR.'transactions'.DS.'front'.DS.'model.php';
 
 /**
- * UserAdminModel is the Admin Model of the User Application.
+ * DealsManagementAdminModel is the Admin Model of the deals Application.
  * 
  * @package Apps\User\Admin
  * @author Johan Dufau <johan.dufau@creatiwity.net>
  * @version 0.4.0-15-02-2013
  */
-class DealsManagementAdminModel {	
+class DealsManagementAdminModel extends TransactionsModel {	
 	public $GROUP = 1;
-	private $db;
 		
 	public function __construct() {
-		$this->db = WSystem::getDB();
-		
-		$this->db->declareTable('deals');
-		$this->db->declareTable('merchants');
+		parent::__construct();
 	}
 	
 //----------------------------------------------------------------------------------------
@@ -226,6 +222,20 @@ class DealsManagementAdminModel {
 			return $this->db->lastInsertId(); 
 		}
 		return false;
+	}
+	
+	
+	
+	/**
+	*	Update deal email
+	**/
+	public function updateEmail2Customer($id_deal, $subject, $body) {
+		$prep = $this->db->prepare('REPLACE INTO deals_emails SET id_deal = :id_deal, subject = :subject, body = :body');
+		$prep->bindParam(':id_deal', $id_deal);
+		$prep->bindParam(':subject', $subject);
+		$prep->bindParam(':body', $body);
+		
+		return $prep->execute();
 	}
 }
 

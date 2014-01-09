@@ -1,0 +1,21 @@
+<html>
+  <head>
+   <title>GetTheDealNow - Your deal is ready!</title>
+  </head>
+  <body>
+	Your deal is ready !
+	<p>Get excited, {$firstname}, your voucher is ready to use. Your voucher code is: <b>{$voucher}</b>. Your voucher will be valid in <b>2 business days</b>. 
+	<p>You can redeem the item {$deal_name} in <b>2 days</b> at one of the address below by simply state your name and the voucher code:
+	</p>
+	{for $count, $address in $addresses}
+	<p style="text-align:center"><b>{$address.address_name}</b><br/>
+	{$address.address}<br/>
+	{$address.opening_hours}<br/>
+	{/for}
+	<p>Go get the deal now, and see you soon on our website for more last minute deals!</p>
+	<p>The GetTheDealNow.com Team
+	---
+	<br>contact@getthedealnow.com
+	<br>Like us on Facebook today and ask for 5% off on your next deal!</p>
+   </body>
+ </html>

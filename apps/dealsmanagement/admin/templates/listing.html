@@ -2,21 +2,6 @@
 	<div class="row">
 		<div class="col-md-12">		
 			<div class="alert fade in" style="display:none"></div>	
-			<div class="modal fade" id="confirmation_window" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">{lang confirmation_title}</h4>
-				  </div>
-				  <div class="modal-body">
-					{lang confirmation_body}
-				  </div>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">{lang cancel}</button>
-					<button type="button" id="confirm" class="btn btn-primary" data-dismiss="modal">{lang confirm}</button>
-				  </div>
-				</div><!-- /.modal-content -->
-			</div>			
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -46,11 +31,11 @@
 							</a>
 						</strong></td>
 						<td>
-							<a href="#" class="editable-data" data-type="combodate" data-name="start_time" data-pk="{$deal.id_deal}" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD/MM/YY  HH:mm" data-viewformat="DD/MM/YY, HH:mm" data-url="/m/admin/dealsmanagement/edit/" data-verif="required" data-mode="popup" data-placement="left" data-combodate="{ minYear: 2013, maxYear: 2015}">
+							<a href="#" class="editable-data" data-type="combodate" data-name="start_time" data-pk="{$deal.id_deal}" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD/MM/YY  HH:mm" data-viewformat="DD/MM/YY, HH:mm" data-url="/m/admin/dealsmanagement/edit/" data-verif="required" data-mode="popup" data-placement="left" data-combodate="{ minYear: 2013, maxYear: 2015, value: '01/01/14, 00:00'}">
 							{$deal.start_time}</a>
 						</td>
 						<td>
-							<a href="#" class="editable-data" data-type="combodate" data-name="end_time" data-pk="{$deal.id_deal}" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD/MM/YY  HH:mm" data-viewformat="DD/MM/YY, HH:mm" data-url="/m/admin/dealsmanagement/edit/" data-verif="required" data-mode="popup" data-placement="left" data-combodate="{ minYear: 2013, maxYear: 2015}">
+							<a href="#" class="editable-data" data-type="combodate" data-name="end_time" data-pk="{$deal.id_deal}" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD/MM/YY  HH:mm" data-viewformat="DD/MM/YY, HH:mm" data-url="/m/admin/dealsmanagement/edit/" data-verif="required" data-mode="popup" data-placement="left" data-combodate="{ minYear: 2013, maxYear: 2015, value: '01/01/14, 00:00'}">
 							{$deal.end_time}</a>
 						</td>
 						<td>
@@ -68,10 +53,19 @@
 						</td>				
 					</tr>
 					<tr>
-						<td colspan="8" class="hiddenRow">
-							<div class="accordian-body collapse" id="row{$deal.id_deal}" style="background-color:#fff"> 
-								<div class= "container" style="margin:10px">
-									<textarea id="news_content" class="form-control" name="news_content" rows="20" cols="80" data-witycms-wysiwyg="true"></textarea>					
+						<td colspan="9" class="hiddenRow">
+							<div class="accordian-body collapse" id="row{$deal.id_deal}"> 
+								<div class="form-horizontal" role="form" style="margin:10px 2px 10px 5px">
+									<div class="form-group">
+										<label for="email" class="col-xs-4 control-label">Personalized email</label>
+										<div class="col-xs-4">
+											<div class="form-inline">
+												<input type="checkbox" name="email" class="form-control switch" data-pk="{$deal.id_deal}" checked>
+												<a class="btn btn-primary" data-toggle="modal" data-target="#email_display" data-pk="{$deal.id_deal}">Display</a>
+												<a class="btn btn-default edit" href="/admin/dealsmanagement/email_edit?id={$deal.id_deal}" data-pk="{$deal.id_deal}">Edit</a>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</td>
