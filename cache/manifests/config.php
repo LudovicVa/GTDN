@@ -3,24 +3,24 @@
 $manifest = array (
   'name' => 'Configuration',
   'version' => '0.1',
-  'date' => '16-10-2013',
+  'date' => '10-01-2014',
   'icone' => '',
   'actions' => 
   array (
   ),
   'admin' => 
   array (
-    'site_data' => 
+    'witycms' => 
     array (
-      'description' => 'site_data',
+      'description' => 'WityCMS Config',
       'menu' => true,
       'requires' => 
       array (
       ),
     ),
-    'database' => 
+    'apps' => 
     array (
-      'description' => 'database',
+      'description' => 'Apps Config',
       'menu' => true,
       'requires' => 
       array (
@@ -28,13 +28,14 @@ $manifest = array (
     ),
   ),
   'admin_menu' => true,
-  'default_admin' => 'site_data',
+  'default_admin' => 'witycms',
   'permissions' => 
   array (
     0 => 'admin',
-    1 => '??',
+    1 => 'config_cms',
+    2 => 'config_app',
   ),
-  'default_lang' => 'fr',
+  'default_lang' => '',
 );
 
 ?>

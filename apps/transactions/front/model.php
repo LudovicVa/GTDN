@@ -61,7 +61,7 @@ class TransactionsModel {
 	**/
 	function getDealInfo($id_deal) {
 		$prep = $this->db->prepare('
-			SELECT deals.id_merchant, id_deal, name AS merchant_name, deal_name, UNIX_TIMESTAMP(start_time) AS start_time, UNIX_TIMESTAMP(end_time) AS end_time, price, original_price, description, images
+			SELECT deals.id_merchant, id_deal, name AS merchant_name, deal_name, DATE_FORMAT(start_time,\'%d/%m/%y %h:%i%p\') AS start_time, DATE_FORMAT(end_time,\'%d/%m/%y %h:%i%p\') AS end_time, price, original_price, description, images
 			FROM deals
 			LEFT JOIN merchants
 			ON deals.id_merchant = merchants.id_merchant
