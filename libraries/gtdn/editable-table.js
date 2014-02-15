@@ -15,6 +15,7 @@ function displayError(msg_div,msg) {
 			.removeClass('alert-success')
 			.html(msg).show();
 }
+
 function success (data) {
 	var msg = '';
 	var error = false;
@@ -107,13 +108,13 @@ function declareNewRow(row) {
 	class_form.editable('option', 'send', 'always');
 	
 	//Switch
-	class_form.on('save', function(){
+	/*class_form.on('save', function(){
 		var that = this;
 		setTimeout(function() {
-			var nextField = $(that).parents('td').first().next().find('a.add');
+			var nextField = $(that).parents('td').first().next().find('a.add:not(.hide)');
 			nextField.editable('show');
 		}, 200);
-	});
+	});*/
 	
 	submit_button.click(function() {
 		class_form.editable('submit', {
@@ -162,7 +163,8 @@ function declareNewRow(row) {
 					msg = data.responseText; 
 				}
 				displayError(msg_div,msg);
-			}
+			},
+			data:submit_button.attr('data-options')
 		}); 
 	});
 }
@@ -252,10 +254,6 @@ require(['jquery', 'bootstrap3-editable'], function($) {
 		
 		$('.new-row').each(function() {
 			declareNewRow($(this));
-		});
-		
-		var editor = new wysihtml5.Editor("wysihtml5-textarea", { // id of textarea element
-		  toolbar:      "wysihtml5-toolbar"
 		});
 	});
 });

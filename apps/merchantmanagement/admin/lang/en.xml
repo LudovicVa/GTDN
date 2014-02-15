@@ -18,8 +18,12 @@
 	<item id="edit">Edit</item>
 	<item id="delete">Delete</item>
 	<item id="cancel">Cancel</item>
+	<item id="reset">Reset</item>
 	
 	<!-- Confirmation -->
 	<item id="confirmation_title">Do you really wish to continue ?</item>
 	<item id="confirmation_body">Do you really wish to delete this merchant and all the data related to it ?</item>
+	
+	<item id="map_title">Confirm the location of the shop</item>
+	
 </lang>

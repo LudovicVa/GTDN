@@ -1,0 +1,92 @@
+<div class="row">
+	<div class="col-md-12">		
+			<h2 class="text-center">{lang edit_title}</span></h2>
+		</div>	  
+		<ul class="nav nav-tabs">
+		  <li class="active"><a href="#general" data-toggle="tab">{lang general_info}</a></li>
+		  <li><a href="#image" data-toggle="tab">{lang image}</a></li>
+		  <li><a href="#description" data-toggle="tab">{lang description}</a></li>
+		</ul>
+		
+		<form role="form" method="POST" action="" enctype="multipart/form-data">
+			<div class="tab-content">
+				<div class="tab-pane active" id="general">
+					<div class="row form-horizontal" style="padding-top:15px">
+						<div class="form-group">
+							<label for="deal_name" class="col-sm-4 control-label">{lang deal_name}</label>
+							<div class="col-sm-8">
+							  <input type="text" class="form-control" id="deal_name" name="deal_name" {if(isset({$deal_name}))}value="{$deal_name}"{/if} placeholder="{lang deal_name}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="price" class="col-sm-4 control-label">{lang price}</label>
+							<div class="col-sm-8">
+							  <div class="input-group">
+								<input type="text" class="form-control" id="price" name="price" {if(isset({$price}))}value="{$price}"{/if} placeholder="{lang price}">
+								<span class="input-group-addon">HKD</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="original_price" class="col-sm-4 control-label">{lang original_price}</label>
+							<div class="col-sm-8">
+							 <div class="input-group">
+								<input type="text" class="form-control" id="original_price" {if(isset({$original_price}))}value="{$original_price}"{/if} name="original_price"placeholder="{lang original_price}">
+								<span class="input-group-addon">HKD</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="start_time" class="col-sm-4 control-label">{lang start_time}</label>
+							<div class="col-sm-8">
+								<div class="input-group date" id="start_time">
+									<input type='text' class="form-control" name="start_time" data-format="DD/MM/YYYY HH:mm" {if(isset({$start_time}))}value="{$start_time}"{/if}/>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="end_time" class="col-sm-4 control-label">{lang end_time}</label>
+							<div class="col-sm-8">
+								<div class="input-group date" id="end_time">
+									<input type='text' class="form-control" name="end_time" data-format="DD/MM/YYYY HH:mm" {if(isset({$end_time}))}value="{$end_time}"{/if}/>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane" id="image">
+					<div class="row form-horizontal text-center" style="padding-top:15px">
+						<p class="text-muted">{lang note_image}</p>
+						<div class="fileinput {if(isset({$images}))}fileinput-exists{else}fileinput-new{/if}" data-provides="fileinput" data-name="name">
+							<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
+						      {if(isset({$images}))}<img src="/deals_images/{$images}">{/if}
+							</div>
+						  <div>
+							<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="image"></span>
+							<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane" id="description">
+					<div class="row form-horizontal" style="padding-top:15px">
+						<p class="text-muted">{lang note_desc}</p>
+						<textarea style="width:100%; height:550px;" name="description" id="email_content">{if(isset({$description}))}{$description}{/if}</textarea>
+						<script type="text/javascript" src="/libraries/ckeditor/ckeditor.js"></script>
+						<script type="text/javascript">
+						CKEDITOR.replace( 'email_content' );
+						</script>
+					</div>
+				</div>
+			</div>
+			<div class="modal-body">
+				
+		  </div>
+		  <div class="modal-footer">
+			<a href="/dealsmanagement/editdeals/" class="btn btn-default" data-dismiss="modal">{lang cancel}</a>
+			<button type="submit" id="confirm" class="btn btn-primary" data-dismiss="modal">{lang confirm}</button>
+		  </div>		  
+		</form>
+</div>	

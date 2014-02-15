@@ -371,7 +371,7 @@ class WTemplateCompiler {
 		$this->for_count++;
 
 		list(,, $key, $value, $array) = $matches;
-
+		
 		if ($array[0] == '$') {
 			$array = $this->parseVar($array);
 		} else {

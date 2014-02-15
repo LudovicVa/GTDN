@@ -1,0 +1,8 @@
+<div class="form-group">
+	<label for="{$WFormField.name}" class="col-sm-3 control-label">{$WFormField.label}</label>
+	<div class="col-sm-6">
+		<input type="{$WFormField.type}" class="form-control" placeHolder="{$WFormField.label}" name="{$WFormField.name}" id="{$WFormField.name}" {if isset({$WFormField.value})}value="{$WFormField.value}"{/if} />
+	</div>
+	<div for={$WFormField.name} class="col-sm-3 help-block">
+	</div>
+</div>

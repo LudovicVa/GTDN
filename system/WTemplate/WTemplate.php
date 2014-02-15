@@ -104,7 +104,7 @@ class WTemplate {
 			// Copy the variables in context #0
 			$this->context[0] = $this->tpl_vars;
 			$index = 1;
-		}
+		}	
 
 		// Create a new context
 		$this->context[$index] = array();
@@ -195,6 +195,15 @@ class WTemplate {
 			unset($this->tpl_vars[$vars]);
 		}
 	}
+	
+	public function compile($href) {	
+		// File init
+		$file = new WTemplateFile($href, $this->baseDir, $this->compileDir);
+
+		// Compilation (if needed)
+		$code = $file->compile($this->compiler);
+		return $code;
+	}
 
 	/**
 	 * Gets the resulting output of a compiled file without printing anything on screen.
@@ -204,12 +213,8 @@ class WTemplate {
 	 * @throws Exception
 	 */
 	public function parse($href) {
-		
-		// File init
-		$file = new WTemplateFile($href, $this->baseDir, $this->compileDir);
-
 		// Compilation (if needed)
-		$code = $file->compile($this->compiler);
+		$code = $this->compile($href);
 
 		// Buffer
 		ob_start();

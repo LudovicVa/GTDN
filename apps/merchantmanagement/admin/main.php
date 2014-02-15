@@ -58,7 +58,8 @@ class MerchantManagementAdminController extends WController {
 	**/	
 	protected function edit(array $params) {
 		header('Content-Type: application/json');
-		$editor = WHelper::load('editor');
+		$editor = WHelper::load('editor');		
+		error_log(print_r($_POST, true));
 		if(!isset($_POST['pk']) || !isset($_POST['name']) || !isset($_POST['value'])) {
 			WNote::error('invalid_request', WLang::get('invalid_request'));
 		} else {
@@ -89,37 +90,21 @@ class MerchantManagementAdminController extends WController {
 					}
 					break;	
 				case 'nickname':
-					$user_id = $this->model->getUserIdByMerchant($merchant_id);
-					if($user_id >= 0) {
-						if(!$this->model->updateUser($user_id, array('nickname' => $value))) {
-							array_push($errors, $editor->generateError('nickname_name_not_saved'));
-						}
-					} else {
-						array_push($errors, $editor->generateError('user_associated_not_found'));
+					if(!$this->model->updateUser($merchant_id, array('nickname' => $value))) {
+						array_push($errors, $editor->generateError('nickname_name_not_saved'));
 					}
 					break;
 				case 'password':
-					$user_id = $this->model->getUserIdByMerchant($merchant_id);
-					if($user_id >= 0) {
-						if(!$this->model->updateUser($user_id, array('password' => sha1($value['password'])))) {
-							array_push($errors, $editor->generateError('password_not_saved'));
-						}
-					} else {
-						array_push($errors, $editor->generateError('user_associated_not_found'));
+					if(!$this->model->updateUser($merchant_id, array('password' => sha1($value['password'])))) {
+						array_push($errors, $editor->generateError('password_not_saved'));
 					}
 					break;	
 				case 'email':
-					$user_id = $this->model->getUserIdByMerchant($merchant_id);
-					if($user_id >= 0) {
-						if(!$this->model->updateUser($user_id, array('email' => $value))) {
-							array_push($errors, $editor->generateError('email_not_saved'));
-						}
-					} else {
-						array_push($errors, $editor->generateError('user_associated_not_found'));
+					if(!$this->model->updateUser($merchant_id, array('email' => $value))) {
+						array_push($errors, $editor->generateError('email_not_saved'));
 					}
 					break;
 				case 'contacts_email':
-					error_log(serialize($data));
 					if(!$this->model->updateContactEmail($merchant_id, $value)) {
 						array_push($errors, $editor->generateError('contact_email_not_saved'));
 					}
@@ -147,6 +132,15 @@ class MerchantManagementAdminController extends WController {
 				case 'tel':
 					if(!$this->model->updateTel($merchant_id, $value)) {
 						array_push($errors, $editor->generateError('tel_not_saved'));
+					}
+					break;
+				case 'latlong':
+					if(!$this->model->updateLatLng($merchant_id, $value)) {
+						array_push($errors, $editor->generateError('lat_lng_not_saved'));
+					} else {
+						$value = explode(',', $value);
+						array_push($errors, $editor->generateSuccess('lat', $value[0]));
+						array_push($errors, $editor->generateSuccess('lng', $value[1]));
 					}
 					break;
 				default:
@@ -192,13 +186,19 @@ class MerchantManagementAdminController extends WController {
 						array_push($errors,$editor->generateError('email_invalid'));
 					}
 					break;
+				case 'latlong':
+					$array = explode(',',$value);
+					if(count($array) != 2 || !is_numeric($array[0]) || !is_numeric($array[1])) {
+						array_push($errors,$editor->generateError('coordinates_invalid'));
+					}
+					break;
 				case 'contacts_name':
 				case 'address_name':
 				case 'address':
 				case 'opening_hours':
 				case 'tel':
 					if(!$this->isName($value)) {
-						array_push($errors,$editor->generateError('name_invalid'));
+						array_push($errors,$editor->generateError('required_field'));
 					}
 					break;
 				default:

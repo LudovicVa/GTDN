@@ -29,11 +29,12 @@ class Editor {
 				$this->dumpNotes();
 				return;
 			} else {
-				$save_errors = $controller->save($values, $id_of_record, $this);	
-				if(count($save_errors) != 0) {
-					$this->pushNotes($save_errors);
+				$save_msg = $controller->save($values, $id_of_record, $this);	
+				if($this->anyError($save_msg)) {
+					$this->pushNotes($save_msg);
 				} else {
-					$this->success('save_success');
+					$this->pushNotes($save_msg);
+					$this->success('msg', WLang::get('save_success'));
 				}
 				
 				$this->dumpNotes();
@@ -43,6 +44,13 @@ class Editor {
 	
 	private function pushNotes(array $notes) {
 		$this->notes = array_merge($this->notes, $notes);
+	}
+	
+	private function anyError(array $notes) {
+		foreach($notes as $note) {
+			if($note['level'] == WNote::ERROR) return true;
+		}
+		return false;
 	}
 	
 	private function dumpNotes() {

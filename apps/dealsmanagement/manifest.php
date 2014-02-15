@@ -15,9 +15,12 @@
 	<permission name="delete" />
 	<permission name="group_manager" />
 	<permission name="config" />
+	<permission name="merchant" />
 	
-	<!-- Front actions -->
-	<action default="default" alias="connexion">login</action>
+	<!-- Front actions -->>
+	<action default="default">dealslisting</action>
+	<action requires="merchant">editdeals</action>
+	<action requires="merchant">editdeal</action>
 	
 	<!-- Admin actions -->
 	<admin>

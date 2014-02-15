@@ -2,6 +2,8 @@
 	<div class="row">
 		<div class="col-md-12">		
 			<div class="alert fade in" style="display:none"></div>	
+			
+			<!----------------------Confirmation Window--------------->
 			<div class="modal fade" id="confirmation_window" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-content">
 				  <div class="modal-header">
@@ -16,7 +18,9 @@
 					<button type="button" id="confirm" class="btn btn-primary" data-dismiss="modal">{lang confirm}</button>
 				  </div>
 				</div><!-- /.modal-content -->
-			</div>			
+			</div>		
+
+			
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -33,26 +37,26 @@
 					<tr>
 						<td><span data-toggle="collapse" data-target="#row{$user.id}" class="black accordion-toggle" title="{lang edit}"><i class="glyphicon glyphicon-plus"></i></span></td>
 						<td><strong>
-							<a href="#" class="editable-data" data-name="nickname" data-type="text" data-pk="{$user.id_merchant}" data-url="/m/admin/merchantmanagement/edit/"  data-verif="required">	
+							<a href="#" class="editable-data" data-name="nickname" data-type="text" data-pk="{$user.id}" data-url="/m/admin/merchantmanagement/edit/"  data-verif="required">	
 							{$user.nickname}
 							</a>
 						</strong></td>
 						<td><strong>
-							<a href="#" class="editable-data" data-name="name" data-type="text" data-pk="{$user.id_merchant}" data-url="/m/admin/merchantmanagement/edit/"  data-verif="required">	
+							<a href="#" class="editable-data" data-name="name" data-type="text" data-pk="{$user.id}" data-url="/m/admin/merchantmanagement/edit/"  data-verif="required">	
 							{$user.name}
 							</a>
 						</strong></td>
 						<td>
-							<a href="#" class="editable-data" data-name="email" data-type="text" data-pk="{$user.id_merchant}" data-url="/m/admin/merchantmanagement/edit/"  data-verif="email">	
+							<a href="#" class="editable-data" data-name="email" data-type="text" data-pk="{$user.id}" data-url="/m/admin/merchantmanagement/edit/"  data-verif="email">	
 							{$user.email}
 							</a>
 						</td>
 						<td>
-							<a href="#" class="editable-data" data-type="password" data-name="password"  data-pk="{$user.id_merchant}" data-url="/m/admin/merchantmanagement/edit/" data-verif="password">********</a>
+							<a href="#" class="editable-data" data-type="password" data-name="password"  data-pk="{$user.id}" data-url="/m/admin/merchantmanagement/edit/" data-verif="password">********</a>
 						</td>
 						<td>{$user.last_activity}</td>
 						<td>
-							{if {$user.id} != $_SESSION['userid']}<span class="delete_merchant" data-url="/m/admin/merchantmanagement/delete/" data-name="merchant" data-pk="{$user.id_merchant}"><i class="glyphicon glyphicon-trash"></i></span>{/if}
+							{if {$user.id} != $_SESSION['userid']}<span class="delete_merchant" data-url="/m/admin/merchantmanagement/delete/" data-name="merchant" data-pk="{$user.id}"><i class="glyphicon glyphicon-trash"></i></span>{/if}
 							
 						</td>				
 					</tr>
@@ -78,10 +82,13 @@
 												<a href="#" class="editable-data" data-name="address_name" data-type="text" data-pk="{$address.id_address}" data-url="/m/admin/merchantmanagement/edit/">{$address.address_name}</a>
 												</b></td>
 												<td><a href="#" class="editable-data" data-name="address" data-type="textarea" data-pk="{$address.id_address}" data-url="/m/admin/merchantmanagement/edit/">{$address.address}</a>
+													<span class="open_maps" data-target="#map_modal" data-pk="{$address.id_address}" data-lat="{$address.lat}" data-lng="{$address.lng}"  data-url="/m/admin/merchantmanagement/edit/"><i class="glyphicon glyphicon-map-marker"></i></span>
 												</td>
 												<td><a href="#" class="editable-data" data-name="opening_hours" data-type="textarea" data-pk="{$address.id_address}" data-url="/m/admin/merchantmanagement/edit/">{$address.opening_hours}</a></td>
 												<td><a href="#" class="editable-data" data-name="tel" data-type="text" data-pk="{$address.id_address}" data-url="/m/admin/merchantmanagement/edit/">{$address.tel}</a></td>
-												<td><span class="delete_row" data-url="/m/admin/merchantmanagement/delete/" data-name="address" data-pk="{$address.id_address}"><i class="glyphicon glyphicon-trash"></i></span></td>
+												<td>												
+													<span class="delete_row" data-url="/m/admin/merchantmanagement/delete/" data-name="address" data-pk="{$address.id_address}"><i class="glyphicon glyphicon-trash"></i></span>
+												</td>
 											</tr>
 											{/for}
 											<tr class="new-row" data-name="address" data-id="{$user.id}">
@@ -92,6 +99,7 @@
 												</td>
 												<td>
 													<a href="#" class="add" data-name="address" data-type="textarea" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
+													<button class="open_maps btn btn-link" data-target="#map_modal" data-lat="0" data-lng="0"  data-url="/m/admin/merchantmanagement/edit/" disabled><i class="glyphicon glyphicon-map-marker"></i></button>
 												</td>
 												<td>
 													<a href="#" class="add" data-name="opening_hours" data-type="textarea" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
@@ -99,8 +107,9 @@
 												<td>
 													<a href="#" class="add" data-name="tel" data-type="textarea" data-url="/m/admin/merchantmanagement/edit/" data-verif="required"></a>
 												</td>
-												<td><span class="delete_row hide" data-url="/m/admin/merchantmanagement/delete/" data-name="address"><i class="glyphicon glyphicon-trash"></i></span>
-													<span class="submit" data-url="/m/admin/merchantmanagement/add/address/{$user.id_merchant}"><i class="glyphicon glyphicon-ok"></i></span>
+												<td>
+													<span class="delete_row hide" data-url="/m/admin/merchantmanagement/delete/" data-name="address"><i class="glyphicon glyphicon-trash"></i></span>
+													<span class="submit" data-url="/m/admin/merchantmanagement/add/address/{$user.id}"><i class="glyphicon glyphicon-ok"></i></span>
 												</td>
 											</tr>	
 											</tbody>
@@ -146,7 +155,7 @@
 												</td>
 												<td>
 													<span class="delete_row hide" data-url="/m/admin/merchantmanagement/delete/" data-name="email"><i class="glyphicon glyphicon-trash"></i></span>
-													<span class="submit" data-url="/m/admin/merchantmanagement/add/contacts/{$user.id_merchant}"><i class="glyphicon glyphicon-ok"></i></span>
+													<span class="submit" data-url="/m/admin/merchantmanagement/add/contacts/{$user.id}"><i class="glyphicon glyphicon-ok"></i></span>
 												</td>
 											</tr>	
 										</tbody>
@@ -255,7 +264,51 @@
 		</div>
 	</div>
 
-	<div id="modal_delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_delete" aria-hidden="true"></div>
+	<!--------------------MAPS-------------->
+	<div class="modal fade" id="map_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="modal-title" id="myModalLabel">{lang map_title}</h4>
+		  </div>
+		  <div class="modal-body">
+			<div class="alert fade in" style="display:none" id="	map_error"></div>	
+			<div id="map-canvas" style="height:500px"/>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" id="map_reset" class="btn btn-info ">{lang reset}</button>
+			<button type="button" id="map_revert_to_address" class="btn btn-info ">{lang revert_to_address}</button>
+			<button type="button" class="btn btn-default" data-dismiss="modal">{lang cancel}</button>
+			<button type="button" id="map_confirm" class="btn btn-primary">{lang confirm}</button>
+		  </div>
+		</div><!-- /.modal-content -->
+	</div>
 	
+	<div class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-header">
+            <h1>Retrieving geolocalisation...</h1>
+        </div>
+        <div class="modal-body">
+            <div class="progress progress-striped active">
+                <div class="bar" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+	
+	<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9Nd8U4g3U0i3ferJwQ4t-Fd11-OIu8Yw&sensor=false">
+    </script>
+    <script type="text/javascript">
+		var map;
+		function initialize() {
+			var mapOptions = {
+				center: new google.maps.LatLng(-34.397, 150.644),
+				zoom: 8
+			};
+			map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
 </div>
 </div>

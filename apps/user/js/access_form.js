@@ -152,17 +152,25 @@ require(['jquery'], function($) {
 	}
 
 	$(document).ready(function() {
-		bindEvents('user-access');
-
+		//bindEvents('user-access');
+		
+		accessGroup($('#groupe option:selected').val());
+		
 		// If user accesses are given, use them to update the form
-		if (typeof user_access != 'undefined') {
+		$('#groupe').on('change', function() {
+			accessGroup($('#groupe option:selected').val());
+		});
+		
+		
+		
+		/*if (typeof user_access != 'undefined') {
 			if (user_access != '') {
 				assignPermissions('user-access', user_access);
 			} else {
 				// var select = document.getElementById('groupe');
 				// accessGroup(select.options[select.selectedIndex].value);
 			}
-		}
+		}*/
 	});
 
 });

@@ -1,53 +1,3 @@
-/**
-** Delete a record
-**/
-function deleteRecord(row, msg_div, url, pk, name) {
-	var ajaxOptions = {
-			url: url,
-			data: {pk: pk, name: name},
-			type: 'POST'
-		};                  
-
-	ajaxOptions.success = function(data) {
-		var msg = '';
-		var error = false;
-		var id, msg_success;
-		if(data.notes instanceof Array) {		
-			for(var key in data.notes) {				
-				if(data.notes[key].level == 'danger') {
-					error = true;
-					msg += data.notes[key].message + '<br/>';
-				} else if(data.notes[key].code == 'success') {
-					msg_success = data.notes[key].message;
-				}
-			}
-		} else {
-			error = true;
-			msg += 'Bad response - Contact admin <br/>';
-		}
-		if(!error) {			
-			//Display message
-			displayTemporaryMessage(msg_div,msg_success);
-			
-			//trigger delete event
-			var hidden = row.next('.new-row-collapse').first();
-			if(hidden != 'undefined') { hidden.remove() }
-			row.remove();
-		} else {
-			displayError(msg_div, msg);
-		}
-	}
-				  
-	ajaxOptions.error = function(data) {
-		displayError(msg_div,JSON.stringify(data));
-	}							 
-	
-	// perform ajax request
-	$.ajax(ajaxOptions);
-}
-
-//----------------------------------------------------------------------------------
-//required part
 require(['jquery', 'bootstrap3-editable'], function($) {
 
 	function success(response) {
@@ -120,7 +70,7 @@ require(['jquery', 'bootstrap3-editable'], function($) {
 					.addClass('has-error');
 				this.options.msg_div.html(msg);
 				$(this).attr('disabled', false);
-				$(this).focus();
+				//$(this).focus();
 			}
 			
 			//error
@@ -134,7 +84,7 @@ require(['jquery', 'bootstrap3-editable'], function($) {
 		
 		//prepare
 		//inputs.prepare();
-		inputs.focusout(function () {
+		inputs.focusout(function (e) {
 			//On change
 			$.when(this.options.change.call(this.options.scope))
 				.done($.proxy(function(response) {
@@ -163,9 +113,6 @@ require(['jquery', 'bootstrap3-editable'], function($) {
 //when ready
 	$(document).ready(function() {	
 		$('.wform').wity_form();
-		/*change(function() {
-			$(this).attr('disabled', true);
-			$(this).parents('div.form-group').addClass('has-success');
-		});     */
+		
 	});
 });

@@ -5,6 +5,7 @@
 
 defined('WITYCMS_VERSION') or die('Access denied');
 
+include_once 'helpers'.DS.'WForm'.DS.'WForm.php';
 /**
  * UserAdminModel is the Admin Model of the User Application.
  * 
@@ -61,10 +62,10 @@ class TransactionsModel {
 	**/
 	function getDealInfo($id_deal) {
 		$prep = $this->db->prepare('
-			SELECT deals.id_merchant, id_deal, name AS merchant_name, deal_name, DATE_FORMAT(start_time,\'%d/%m/%y %h:%i%p\') AS start_time, DATE_FORMAT(end_time,\'%d/%m/%y %h:%i%p\') AS end_time, price, original_price, description, images
+			SELECT deals.id_user, id_deal, name AS merchant_name, deal_name, DATE_FORMAT(start_time,\'%d/%m/%y %h:%i%p\') AS start_time, DATE_FORMAT(end_time,\'%d/%m/%y %h:%i%p\') AS end_time, price, original_price, description, images
 			FROM deals
 			LEFT JOIN merchants
-			ON deals.id_merchant = merchants.id_merchant
+			ON deals.id_user = merchants.id_user
 			WHERE id_deal = :id_deal');
 		
 		$prep->bindParam(':id_deal', $id_deal, PDO::PARAM_INT);
@@ -77,13 +78,13 @@ class TransactionsModel {
 			$deal = $deal[0];
 		}
 		
-		$id = $deal['id_merchant'];
+		$id = $deal['id_user'];
 		
 		//Get addresses
 		$prep = $this->db->prepare('
 			SELECT id_address,address_name, address, opening_hours, tel
 			FROM merchants_addresses
-			WHERE id_merchant = :id'
+			WHERE id_user = :id'
 		);
 		$prep->bindParam(':id', $id);
 		$success = $prep->execute();
@@ -94,7 +95,7 @@ class TransactionsModel {
 			$prep = $this->db->prepare('
 				SELECT id_email, email_name, email
 				FROM merchants_emails
-				WHERE id_merchant = :id'
+				WHERE id_user = :id'
 			);
 			$prep->bindParam(':id', $id);
 			$success = $prep->execute();
@@ -132,15 +133,7 @@ class TransactionsModel {
 	}
 	
 	public function retrieveDefaultEmail() {
-		$prep = $this->db->prepare('
-			SELECT id_deal_email, subject, body AS email_body
-			FROM deals_emails
-			WHERE id_deal = :id'
-		);
-		$prep->bindParam(':id', $default);
-		$default = "default_email";
-		$success = $prep->execute();
-		return $prep->fetch();
+		return array('email_body' => WConfig::get('apps.transactions.mail2client'));
 	}
 	
 	
@@ -159,7 +152,7 @@ class TransactionsModel {
 			SELECT id_deal, name AS merchant_name, deal_name
 			FROM deals
 			LEFT JOIN merchants
-			ON deals.id_merchant = merchants.id_merchant
+			ON deals.id_user = merchants.id_user
 			');
 		$prep->execute();
 		
@@ -171,7 +164,10 @@ class TransactionsModel {
 	**/
 	public function sendEmails(array $mail_info) {
 		$website_mail = array('no-reply@getthedealnow.com', 'Get The Deal Now');
-		$bcc = array(array('ludovic-vanhove@orange.fr')/*, array('contact@getthedealnow.com')*/);
+		$bcc_tmp = explode(',' , WConfig::getAppVar('transactions', 'bcc_email', 'ludovic-vanhove@orange.fr'));
+		foreach($bcc_tmp as $key => $mail) {
+			$bcc[$key] = array($mail);
+		}
 			
 		$to = array();
 		foreach($mail_info['contact_email'] as $email) {

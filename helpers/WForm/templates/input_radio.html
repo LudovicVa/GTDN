@@ -1,0 +1,13 @@
+<div class="form-group">
+    <div class="col-sm-offset-3 col-sm-6">
+	{for $option in {$WFormField.options}}
+      <div class="radio">
+        <label>
+           <input type="radio" name="{$option.name}" id="{$option.name}" {if({$WFormField.value} == {$option.value})}checked{/if} value={$option.value}> {$option.label}
+        </label>
+      </div>
+	 {/for}
+    </div>
+	<div for="{$WFormField.name}" class="col-sm-3 help-block">
+	</div>
+</div>

@@ -19,10 +19,10 @@ class TransactionsAdminModel extends TransactionsModel {
 //MERCHANTS OPERATION
 	public function getTransactions($from, $number, $order = 'created_date', $sens='ASC') {
 		$prep = $this->db->prepare('
-			SELECT id_transaction, transactions.id_deal, email, firstname, lastname, receipt_id, code_used, transactions.created_date, deals.deal_name, deals.id_merchant, merchants.name
+			SELECT id_transaction, transactions.id_deal, email, firstname, lastname, receipt_id, code_used, transactions.created_date, deals.deal_name, deals.id_user, merchants.name
 			FROM deals, merchants, transactions
 			WHERE transactions.id_deal = deals.id_deal
-			AND deals.id_merchant = merchants.id_merchant
+			AND deals.id_user = merchants.id_user
 			ORDER BY '.$order.' '.$sens.'
 			'.($number > 0 ? 'LIMIT :start, :number' : '')
 		);

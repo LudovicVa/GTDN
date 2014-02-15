@@ -29,6 +29,13 @@ class DealsManagementAdminController extends WController {
 			}
 		}
 		
+		$super_admin = $_SESSION['access'] == 'all';
+		if(!$super_admin) {
+			$merchant_id = $this->model->getMerchantIdFromUser($_SESSION['userid']);
+		} else {
+			$merchant_id = false;
+		}
+		
 		//Sorting data
 		$sortingHelper = WHelper::load('SortingHelper', array(
 			array('id_deal', 'deal_name', 'merchant_name', 'start_time', 'end_time', 'price', 'original_price'), 
@@ -37,16 +44,18 @@ class DealsManagementAdminController extends WController {
 		$sort = $sortingHelper->findSorting($sort_by, $sens);
 		
 		$model = array(
-			'deals'         => $this->model->getDeals(($page-1)*$n, $n, $sort[0], $sort[1]),
+			'deals'         => $this->model->getDeals(($page-1)*$n, $n, $sort[0], $sort[1], $merchant_id?array('id_user' => $merchant_id):array()),
 			'current_page'  => $page,
 			'stats'         => array(),
 			'per_page'      => $n,
-			'sorting_tpl'   => $sortingHelper->getTplVars()
+			'sorting_tpl'   => $sortingHelper->getTplVars(),
+			'super_admin' => $super_admin, //$this->getAdminContext()
+			'merchant_id' => $merchant_id,
 		);
 		
 		// Users count
 		$model['stats']['total'] = $this->model->countDeals();
-		$model['stats']['request'] = $this->model->countDeals();
+		$model['stats']['request'] = $model['stats']['total'];
 		
 		return $model;
 	}
@@ -58,10 +67,10 @@ class DealsManagementAdminController extends WController {
 	 */	
 	protected function merchants(array $params) {
 		$merchants = $this->model->getMerchants();
-		header('Content-Type: application/json');
+		//header('Content-Type: application/json');
 		$result = array();
 		foreach($merchants as $key=>$merchant) {
-			$value = $merchant['id_merchant'];
+			$value = $merchant['id_user'];
 			$text = $merchant['name'];
 			$result[$value] = $text;
 		}
@@ -90,13 +99,21 @@ class DealsManagementAdminController extends WController {
 	
 	public function save($values, $deal_id, $editor) {
 		$errors = array();
-		foreach($values as $data) {
-			if(!isset($data['type']) || !isset($data['value'])) {
-				array_push($errors, $editor->generateError('invalid_request'));
-				return $errors;
+		foreach($values as $key=>$data) {
+		
+			if(is_array($data)) {
+				if(!isset($data['type']) || !isset($data['value'])) {
+					array_push($errors, $editor->generateError('invalid_request'));
+					return $errors;			
+				} else {
+					$type = $data['type'];
+					$value = $data['value'];
+				}
+			} else {
+				$type = $key;
+				$value = $data;
 			}
-			$type = $data['type'];
-			$value =  $data['value'];
+			
 			switch($type) {
 				case 'deal_name':
 					if(!$this->model->updateName($deal_id, $value)) {
@@ -138,13 +155,21 @@ class DealsManagementAdminController extends WController {
 	
 	public function check($values, $editor) {
 		$errors = array();
-		foreach($values as $data) {
-			if(!isset($data['type']) || !isset($data['value'])) {
-				array_push($errors, $editor->generateError('invalid_request'));
-				return $errors;
+		foreach($values as $key=>$data) {
+		
+			if(is_array($data)) {
+				if(!isset($data['type']) || !isset($data['value'])) {
+					array_push($errors, $editor->generateError('invalid_request'));
+					return $errors;			
+				} else {
+					$type = $data['type'];
+					$value = $data['value'];
+				}
+			} else {
+				$type = $key;
+				$value = $data;
 			}
-			$type = $data['type'];
-			$value =  $data['value'];
+			
 			switch($type) {
 				case 'deal_name':
 					if(!($e = $this->isName($value))) {
@@ -180,6 +205,9 @@ class DealsManagementAdminController extends WController {
 		return $errors;
 	}
 	
+	/**
+	*
+	**/
 	public function isValidRecordId($id, $editor) {
 		if(!$this->model->isDealId($id)) {
 			return array($editor->generateError('deal_does_not_exist'));
@@ -187,14 +215,19 @@ class DealsManagementAdminController extends WController {
 		return array();
 	}
 	
+	/**
+	* Add action
+	**/
 	protected function add(array $params) {
 		header('Content-Type: application/json');
 		$type = $params[0];
 		switch($type) {
 			case 'deal':
-				$id = $this->addDeal($_POST);
-				if(isset($id)) {
-					WNote::success('id', $id);
+				$result = $this->addDeal($_POST);
+				
+				if(isset($result) && is_array($result)) {
+					WNote::success('id', $result['id']);
+					WNote::success('paypal_button', $result['paypal_id']);
 					WNote::success('success', WLang::get('deal_successfully_added'));
 				} else {
 					WNote::error('problem_while_validating', 'problem_while_validating');
@@ -228,27 +261,23 @@ class DealsManagementAdminController extends WController {
 		return $name != null && $name != "";
 	}
 	
+	/**
+	* Add a deal
+	**/
 	private function addDeal(array $params) {
-	
-		if(!$this->isName($params['deal_name'])) {
-			WNote::error('deal_name_required', 'deal_name_required');
-			return;
-		}
+		$errors = $this->check($params,  WHelper::load('editor'));
 		
-		if(!$this->model->isMerchantId($params['merchant'])) {
-			WNote::error('merchant_unknown', 'merchant_unknown');
-			return;
-		}
-		
-		if(!is_numeric($params['price']) || !is_numeric($params['original_price'])) {
-			WNote::error('price_not_a_number', 'price_not_a_number');
-			return;
+		if(count($errors) != 0) {
+			foreach($errors as $note) {
+				WNote::raise($note);
+			}
+			return false;
 		}
 		
 		return $this->model->createDeal($params);
 	}
 	
-//email
+//Email
 	/**
 	 * @var WTemplate WTemplate instance
 	 */
@@ -304,7 +333,7 @@ class DealsManagementAdminController extends WController {
 				if (substr($body, -5) === '.html' && file_exists(WITY_PATH.$body)) {
 					// Use system directory separator
 					if (DS != '/') {
-						$params['body'] = str_replace('/', DS, $params['body']);
+						$body = str_replace('/', DS, $body);
 					}
 					$body = self::$tpl->parse($body);
 				} else {
@@ -330,35 +359,6 @@ class DealsManagementAdminController extends WController {
 	
 	private function retrieveDealInfo($id) {
 		return $this->model->getDealInfo($id);
-	}
-	
-	/*****************************************
-	 * WTemplateCompiler's new handlers part *
-	 *****************************************/
-	/**
-	 * Handles the {mail_action} node in WTemplate
-	 * {mail_action} gives access to email action
-	 *
-	 * Example: {action /news/admin/publish/{$news.id}}
-	 * Replaced by: /mail/[hash]
-	 *
-	 * @param string $args language identifier
-	 * @return string php string that calls the WLang::get()
-	 */
-	public static function compile_mail_action($args) {
-		if (!empty($args)) {
-			$url = $args;
-
-			// Replace the template variables in the string
-			$url = WTemplateParser::replaceNodes($url, create_function('$s', "return '\".'.WTemplateCompiler::parseVar(\$s).'.\"';"));
-
-			// Build final php lang string
-			if (strlen($url) > 0) {
-				return '<?php echo MailController::storeAction("'.$url.'"); ?>';
-			}
-		}
-
-		return '';
 	}
 }
 

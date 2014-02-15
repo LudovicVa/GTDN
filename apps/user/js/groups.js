@@ -55,7 +55,7 @@ require(['jquery'], function($) {
 	}
 
 	$(document).ready(function() {
-		bindEvents('group-add');
+		//bindEvents('group-add');
 	});
 
 });

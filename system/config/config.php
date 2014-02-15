@@ -5,13 +5,16 @@
  */
 
 $config = array (
-  'base' => 'http://localhost:8080/GTDN',
+  'base' => 'http://127.0.0.1:8080/GTDN',
   'site_name' => 'Get The Deal Now',
-  'theme' => 'grafx',
-  'lang' => 'fr-FR',
+  'theme' => 'gtdn',
+  'lang' => 'en',
   'timezone' => 'Europe/Paris',
   'email' => 'ludovic-vanhove@orange.fr',
   'debug' => false,
+  'excluded' => Array ('utma' => 0,
+		'__utmz' => 0,
+		'wsid' => 0)
 );
 
 ?>

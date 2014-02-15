@@ -16,4 +16,6 @@
 	<item id="note_email_edit">You can use those variables</item> 
 	<item id="note_voucher_only_once">Please note you have to use at least once the voucher variable !</item>
 	<item id="voucher_not_present">Please note you have to use at least once the {$voucher} variable... Otherwise the customer won't be able to claim his deal !</item>
+		
+	<item id="stay_tuned">Stay tuned for even more content !</item>
 </lang>

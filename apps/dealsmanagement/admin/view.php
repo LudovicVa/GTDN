@@ -33,7 +33,7 @@ class DealsManagementAdminView extends WView {
 		$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/script.js');
 		
 		$this->assign('css', '/libraries/bootstrap-switch/css/bootstrap-switch.min.css');
-		$this->assign('deals', $model['deals']);
+		$this->assign($model);
 		
 		$this->assign('base_url', WRoute::getBase());
 		

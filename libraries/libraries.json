@@ -11,16 +11,23 @@
 		"wysihtml5": "wysihtml5-bootstrap/wrapper",
 		"wysihtml5-bootstrap-plugin": "wysihtml5-bootstrap/bootstrap-wysihtml5-0.0.2.min",
 		"wysihtml5-core": "wysihtml5-bootstrap/wysihtml5.min",
-		"bootstrap-switch": "bootstrap-switch/js/bootstrap-switch"
+		"bootstrap-switch": "bootstrap-switch/js/bootstrap-switch",
+		"wity_ajax":"gtdn/wity_ajax",
+		"moment":"gtdn/moment.min",
+		"extend":"extend/js/jasny-bootstrap.min",
+		"date_picker":"datepicker/js/bootstrap-datetimepicker.min"
 	},
 	"shim": {
 		"bootstrap": ["jquery"],
 		"wysihtml5": ["jquery", "wysihtml5-bootstrap-plugin"],
 		"wysihtml5-bootstrap-plugin": ["wysihtml5-core"],
 		"bootstrap-modal-core": ["jquery", "bootstrap", "bootstrap-modal-2.2.0/js/bootstrap-modalmanager"],
-		"bootstrap3-editable": ["jquery", "bootstrap", "wysihtml5-core", "wysihtml5-bootstrap-plugin", "wysihtml5"],
-		"bootstrap-datetimepicker": ["jquery", "bootstrap"],
-		"bootstrap-switch": ["jquery"]
+		"bootstrap3-editable": ["jquery", "bootstrap", "moment"],
+		"date_picker": ["jquery", "bootstrap"],
+		"extend": ["jquery", "bootstrap"],
+		"bootstrap-datetimepicker": ["jquery", "bootstrap","moment"],
+		"bootstrap-switch": ["jquery"],
+		"wity_ajax": ["jquery"]
 	},
 	"waitSeconds": 15
 }

@@ -6,9 +6,9 @@
 	<item id="bad_data">Please, fill in all the required fields.</item>
 	<item id="error_password_not_matching">The password given does not match with the password confirmation.</item>
 	<item id="error_no_password">No password given.</item>
-	<item id="nickname_bad_length">Nickname length must be between 3 and 30 characters.</item>
-	<item id="nickname_invalid_char">Nickname contains invalid char (.)</item>
-	<item id="nickname_already_used">Nickname already in use.</item>
+	<item id="nickname_bad_length">Username length must be between 3 and 30 characters.</item>
+	<item id="nickname_invalid_char">Username contains invalid char (.)</item>
+	<item id="nickname_already_used">Username already in use.</item>
 	<item id="email_not_valid">The email given is not valid.</item>
 	<item id="email_already_used">The email given is already in use.</item>
 	
@@ -16,13 +16,13 @@
 	<item id="login_success">Welcome %s!</item>
 	<item id="login_max_attempt">You reached the maximum of login attempt authorized.
 Please, wait a moment before trying again.</item>
-	<item id="login_error"><![CDATA[The couple <em>nickname / password</em> given does not match with any valid account.]]></item>
+	<item id="login_error"><![CDATA[The couple <em>username / password</em> given does not match with any valid account.]]></item>
 	<item id="user_disconnected">You were loged out successfully.</item>
 	<item id="cookie_not_accepted">To login, your browser needs to accept the cookies.</item>
 	
 	<!-- Login form -->
 	<item id="login_form_title">Connection</item>
-	<item id="nickname">Identifier</item>
+	<item id="nickname">Username</item>
 	<item id="password">Password</item>
 	<item id="remain_connected_for">Remain connected for...</item>
 	<item id="minuts">minuts</item>
@@ -46,7 +46,7 @@ Please, wait a moment before trying again.</item>
 	<item id="user_register_email_confirm"><![CDATA[
 <p>Welcome on {site_name}!</p>
 <p>There are your user account credentials:<br />
-Nickname: {nickname}<br />
+Username: {nickname}<br />
 Password: {password}</p>
 
 <p>To validate your account, please follow this link:<br />
@@ -63,7 +63,7 @@ Password: {password}</p>
 	<item id="user_register_email_admin"><![CDATA[
 <p>Welcome on {site_name}!</P>
 <p>There are your user account credentials:<br />
-Nickname: {nickname}<br />
+Username: {nickname}<br />
 Password: {password}</p>
 <p>First, your account <strong>needs to be validated by an administrator</strong> to be activated.<br />
 You will be noticed as soon as it will be done.</p>
@@ -85,7 +85,7 @@ You will be notified once it will be done.]]></item>
 	<item id="user_register_email"><![CDATA[
 <p>Welcome on {site_name}!</p>
 <p>There are your user account credentials:<br />
-Nickname: {nickname}<br />
+Username: {nickname}<br />
 Password: {password}</p>
 <p>You can login with your account on the website:
 <a href="{base}/user/login/">Login</a></p>

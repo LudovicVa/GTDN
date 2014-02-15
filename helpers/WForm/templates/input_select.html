@@ -1,0 +1,16 @@
+<div class="form-group">
+	<label for="{$WFormField.name}" class="col-sm-3 control-label">{$WFormField.label}</label>
+	<div class="col-sm-6">
+		<select class="form-control" name="{$node_value.name}" id="{$node_value.name}">
+		{for $option in $WFormField.options}
+			{if(is_array({$option}))}
+				<option value={$option.value} {if({$WFormField.value} == {$option.value})}selected{/if} >{$option.label}</option>
+			{else}
+				<option value={$option} {if({$WFormField.value} == {$option})}selected{/if} >{$option}</option>
+			{/if}
+		 {/for}
+		</select>
+	</div>
+	<div for="{$WFormField.name}" class="col-sm-3 help-block">
+	</div>
+</div>
