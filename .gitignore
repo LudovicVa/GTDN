@@ -1,4 +1,5 @@
 cache/[^.]*/
+THEME/[^.]*/
 installer/bypass*
 system/config/config.php
 system/config/database.php

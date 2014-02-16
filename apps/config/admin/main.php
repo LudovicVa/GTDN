@@ -19,7 +19,9 @@ class ConfigAdminController extends WController {
 	* Config WityCMS
 	**/	
 	protected function witycms(array $params) {
-	
+			// Loading route config values		
+		$config = WConfig::get('config');
+		
 		if (WRequest::hasData()) {
 			$received = WRequest::getAssoc(array('save', 'base', 'site_name', 'theme', 'lang', 'timezone', 'email', 'debug'));
 			
@@ -36,8 +38,6 @@ class ConfigAdminController extends WController {
 		
 		//Gett all data
 		
-		// Loading route config values		
-		$config = WConfig::get('config');
 		
 		WConfig::load('database', SYS_DIR.'config'.DS.'database.php', 'php');
 		$database = WConfig::get('database');
