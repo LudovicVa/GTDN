@@ -246,7 +246,6 @@ class WSession {
 	 * @return boolean true if flood detected, false otherwise
 	 */
 	public function check_flood() {
-		return true;
 		if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
 			$flood = true;
 			

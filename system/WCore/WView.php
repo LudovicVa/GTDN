@@ -232,7 +232,7 @@ class WView {
 		if (empty(self::$global_vars[$stack_name]) && $stack_name != 'require') {
 			return '';
 		}
-		
+
 		switch ($stack_name) {
 			case 'css':
 				$css = '';
@@ -242,7 +242,7 @@ class WView {
 				return $css;
 
 			case 'js':
-				$script = "";
+				$script = '';
 				foreach (self::$global_vars['js'] as $file) {
 					$script .= '<script type="text/javascript" src="'.$file.'"></script>'."\n";
 				}
@@ -267,8 +267,7 @@ class WView {
 				}
 
 				$require .= '</script>'."\n";
-				
-				
+
 				return $require;
 
 			default:
@@ -323,6 +322,7 @@ class WView {
 		// Treat global vars
 		foreach (self::$global_vars as $stack => $values) {
 			$data = $this->getGlobalVar($stack);
+
 			if (!empty($data)) {
 				$this->tpl->assign($stack, $data, true);
 			}
@@ -330,7 +330,7 @@ class WView {
 
 		// Switch context in WTemplate
 		$this->tpl->pushContext();
-		
+
 		// Assign View variables
 		$this->tpl->assign($this->vars);
 
@@ -365,7 +365,7 @@ class WView {
 		// Clean the view for the next render
 		$this->templateFile = '';
 		$this->context['signature'] = '';
-		
+
 		return $this->rendered_string;
 	}
 

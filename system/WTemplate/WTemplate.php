@@ -104,7 +104,7 @@ class WTemplate {
 			// Copy the variables in context #0
 			$this->context[0] = $this->tpl_vars;
 			$index = 1;
-		}	
+		}
 
 		// Create a new context
 		$this->context[$index] = array();
@@ -135,7 +135,7 @@ class WTemplate {
 	 * @param mixed        $values Value
 	 * @param bool         $global Is the variable global?
 	 */
-	public function assign($names, $values = null, $global = false) {		
+	public function assign($names, $values = null, $global = false) {
 		if (is_array($names)) {
 			$this->tpl_vars = array_merge($this->tpl_vars, $names);
 		} else {

@@ -150,7 +150,6 @@ class WTemplateCompiler {
 		else {
 			// Get begining tag name : {"name" ...}
 			$matches = null;
-			
 			preg_match('#^([a-zA-Z0-9_]+)#', $node, $matches);
 
 			if (empty($matches)) {
@@ -162,7 +161,7 @@ class WTemplateCompiler {
 
 			// Remove node name to get following string
 			$args = trim(substr($node, strlen($node_name)));
-			
+
 			if (method_exists('WTemplateCompiler', $handler)) {
 				// Check whether it is not an open only node
 				if (method_exists('WTemplateCompiler', $handler.'_close')) {
@@ -371,7 +370,7 @@ class WTemplateCompiler {
 		$this->for_count++;
 
 		list(,, $key, $value, $array) = $matches;
-		
+
 		if ($array[0] == '$') {
 			$array = $this->parseVar($array);
 		} else {
