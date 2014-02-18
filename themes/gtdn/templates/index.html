@@ -47,13 +47,13 @@
   <body>
 
     <div class="container">
-		<div class="row-fluid" style="padding-top:10px;height:140px">
+		<div class="row" style="padding-top:10px;">
 			<div class="col-md-5" style="text-align:center;">
-				<img src="/themes/gtdn/img/logo.png"/ style="width:100%">
+				<a href="/"><img src="/themes/gtdn/img/logo.png"/ style="width:100%"></a>
 			</div>
 			<div class="col-md-7" style="padding-top:40px">
 				<ul class="nav nav-justified top_menu">
-					<li {if({$currentApp} == 'pages' && {$currentAction} == 'welcome')}class="active"{/if}><a href="/pages/welcome">Home</a></li>
+					<li {if({$currentApp} == 'pages' && {$currentAction} == 'welcome')}class="active"{/if}><a href="/">Home</a></li>
 					<li {if({$currentApp} == 'contact')}class="active"{/if}><a href="/contact/">Contact us</a></li>
 					<li {if({$currentApp} == 'dealsmanagement')}class="active"{/if}><a href="/dealsmanagement/editdeals/">My Account</a></li>
 				</ul>
@@ -76,7 +76,5 @@
 	 <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./js/jquery.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
   </body>
 </html>

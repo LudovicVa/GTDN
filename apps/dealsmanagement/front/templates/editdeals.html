@@ -3,7 +3,7 @@
 		{for $count, $deal in $deals}
 		
 		{if({$count} % 3 == 0)}
-		<div class="row">
+		<div class="row-fluid">
 		{/if}
 			<div class="col-sm-6 col-md-4">
 				<div class="thumbnail" style="min-height:300px">
@@ -40,8 +40,8 @@
 		</div>
 		{/if}	
 		{/for}
-		{if({$count} % 3 == 2)}
-		<div class="row">
+		{if(!isset({$count}) || {$count} % 3 == 2)}
+		<div class="row-fluid">
 		{/if}
 			<!---------------------------------------->
 			<div class="col-sm-6 col-md-4" id="new_deal">
