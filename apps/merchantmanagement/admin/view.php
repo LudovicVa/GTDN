@@ -31,6 +31,8 @@ class MerchantManagementAdminView extends WView {
 		$this->assign('require', '{$base_url}/libraries/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js');		
 		$this->assign('require', '{$base_url}/libraries/gtdn/editable-table.js');
 		$this->assign('require', 'wity_ajax');
+		$this->assign('require', 'bootstrap-modal-2.2.0/bootstrap3-patch');
+		$this->assign('require', 'bootstrap-modal-2.2.0/bootstrap-modal');
 		$this->assign('require', 'apps!merchantmanagement/maps');
 		$this->assign('users', $model['users']);
 		$this->assign($model['sorting_tpl']);

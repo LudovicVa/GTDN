@@ -1,0 +1,134 @@
+<div class="wity-app">
+	<div class="panel-group" id="accordion">
+	  {for $count, $shop in $shops}
+	  <!---panel-default--->
+	  <div class="panel panel-default">
+		<div class="panel-heading">
+		  <h4 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#{$shop.id_address}">
+			  {$shop.address_name}
+			</a>
+		  </h4>
+		</div>
+		<!----class="panel-collapse collapse in"--->
+		<div id="{$shop.id_address}" class="panel-collapse collapse {if({$selected}=={$shop.id_address})}in{/if}">
+			<form role="form" class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
+				<div class="panel-body">
+					<input type="hidden" name="id_address" value="{$shop.id_address}">
+					<div class="form-group">
+						<label for="address_name" class="col-sm-4 control-label">{lang shop_name}</label>
+						<div class="col-sm-8">
+						  <input type="text" class="form-control" name="address_name" {if(isset({$shop.address_name}))}value="{$shop.address_name}"{/if} placeholder="{lang shop_name}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="tel" class="col-sm-4 control-label">{lang tel}</label>
+						<div class="col-sm-8">
+						  <input type="text" class="form-control" name="tel" {if(isset({$shop.tel}))}value="{$shop.tel}"{/if} placeholder="{lang tel}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="address" class="col-sm-4 control-label">{lang opening_hours}</label>
+						<div class="col-sm-8">
+						  <textarea class="form-control" name="opening_hours" placeholder="{lang opening_hours}">{if(isset({$shop.opening_hours}))}{$shop.opening_hours}{/if}</textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="address" class="col-sm-4 control-label">{lang address}<br>						
+							<button type="button" class="btn btn-primary btn-xs open_maps" data-target="#map_modal" data-url="/m/admin/merchantmanagement/edit/">
+							{lang show_on_map}</button>
+							<input type="hidden" name="lat" {if(isset({$shop.lat}))}value="{$shop.lat}"{/if}>			
+							<input type="hidden" name="lng" {if(isset({$shop.lng}))}value="{$shop.lng}"{/if}>
+						</label>
+						<div class="col-sm-8">
+						  <textarea class="form-control" name="address" placeholder="{lang address}">{if(isset({$shop.address}))}{$shop.address}{/if}</textarea>
+						</div>
+					</div>		
+				</div>
+				<div class="panel-footer text-right">
+					<button type="submit" class="btn btn-primary">{lang confirm}</button>
+				</div>	
+			</form>
+		  </div>
+		</div>
+	  {/for}
+	  
+	  <div class="panel panel-default">
+		<div class="panel-heading">
+		  <h4 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#new">
+			  {lang add_new_address}
+			</a>
+		  </h4>
+		</div>
+		<!----class="panel-collapse collapse in"--->
+		<div id="new" class="panel-collapse collapse {if({$selected}=='new')}in{/if}">
+			<form role="form" class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="address_name" class="col-sm-4 control-label">{lang shop_name}</label>
+						<div class="col-sm-8">
+						  <input type="text" class="form-control" name="address_name" {if(isset({$address_name}))}value="{$address_name}"{/if} placeholder="{lang shop_name}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="tel" class="col-sm-4 control-label">{lang tel}</label>
+						<div class="col-sm-8">
+						  <input type="text" class="form-control" name="tel" {if(isset({$tel}))}value="{$tel}"{/if} placeholder="{lang tel}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="address" class="col-sm-4 control-label">{lang opening_hours}</label>
+						<div class="col-sm-8">
+						  <textarea class="form-control" name="opening_hours" placeholder="{lang opening_hours}">{if(isset({$opening_hours}))}{$opening_hours}{/if}</textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="address" class="col-sm-4 control-label">{lang address}<br>						
+							<button type="button" class="btn btn-primary btn-xs open_maps" data-target="#map_modal" data-url="/m/admin/merchantmanagement/edit/">
+							{lang show_on_map}</button>
+							<input type="hidden" name="lat" {if(isset({$lat}))}value="{$lat}"{/if}>			
+							<input type="hidden" name="lng" {if(isset({$lng}))}value="{$lng}"{/if}>
+						</label>
+						<div class="col-sm-8">
+						  <textarea class="form-control" name="address" placeholder="{lang address}">{if(isset({$address}))}{$address}{/if}</textarea>
+						</div>
+					</div>		
+				</div>
+				<div class="panel-footer text-right">
+					<button type="submit" class="btn btn-primary">{lang confirm}</button>
+				</div>	
+			</form>
+		  </div>
+		</div>
+	</div>
+</div>
+
+<!--------------------MAPS-------------->
+<div class="modal fade" id="map_modal" role="dialog" aria-labelledby="label" aria-hidden="true">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title" id="label">{lang map_title}</h4>
+	  </div>
+	  <div class="modal-body">
+		<div class="alert fade in" style="display:none" id="map_error"></div>	
+		<div id="map-canvas" style="height:500px"></div>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" id="map_reset" class="btn btn-info ">{lang reset}</button>
+		<button type="button" id="map_revert_to_address" class="btn btn-info ">{lang revert_to_address}</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">{lang cancel}</button>
+		<button type="button" id="map_confirm" class="btn btn-primary">{lang confirm}</button>
+	  </div>
+	</div><!-- /.modal-content -->
+</div>
+
+<script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9Nd8U4g3U0i3ferJwQ4t-Fd11-OIu8Yw&sensor=false">
+</script>
+<script type="text/javascript">
+
+</script>
+
+	

@@ -1,7 +1,7 @@
 <div class="form-group">
 	<label for="{$WFormField.name}" class="col-sm-3 control-label">{$WFormField.label}</label>
 	<div class="col-sm-6">
-		<select class="form-control" name="{$node_value.name}" id="{$node_value.name}">
+		<select class="form-control" name="{$WFormField.name}" id="{$WFormField.name}">
 		{for $option in $WFormField.options}
 			{if(is_array({$option}))}
 				<option value={$option.value} {if({$WFormField.value} == {$option.value})}selected{/if} >{$option.label}</option>

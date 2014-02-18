@@ -5,8 +5,8 @@
  */
 
 $route = array (
-  'default_front' => 'news',
-  'default_admin' => 'admin/news',
+  'default_front' => 'pages',
+  'default_admin' => 'admin/pages',
   'custom' => 
   array (
   ),

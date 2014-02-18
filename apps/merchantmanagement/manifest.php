@@ -10,14 +10,10 @@
 	<date>22-10-2013</date>
 	
 	<!-- Permissions -->
-	<permission name="add" />
-	<permission name="edit" />
-	<permission name="delete" />
-	<permission name="group_manager" />
-	<permission name="config" />
+	<permission name="merchant" />
 	
 	<!-- Front actions -->
-	<action default="default" alias="connexion">login</action>
+	<action default="default" requires="merchant">shops</action>
 	
 	<!-- Admin actions -->
 	<admin>

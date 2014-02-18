@@ -246,7 +246,8 @@ class WRequest {
 	 */
 	public static function hasData() {
 		//$excluded_data = WConfig::get('config.excluded');
-		$excluded_data = $_COOKIE;
+		//$excluded_data = $_COOKIE;
+		$excluded_data = array();
 		$tested_data = array_diff_key($_REQUEST, $excluded_data);
 		return !empty($tested_data) && !in_array(null, $tested_data, true) && !self::$lock;
 	}

@@ -12,12 +12,9 @@ defined('WITYCMS_VERSION') or die('Access denied');
  * @author Johan Dufau <johan.dufau@creatiwity.net>
  * @version 0.4.0-26-04-2013
  */
-class UserAdminView extends WView {
+class MerchantManagementView extends WView {
 	public function __construct() {
 		parent::__construct();
-
-		// CSS for all views
-		$this->assign('css', '/apps/user/admin/css/user.css');
 	}
 
 	/**
@@ -25,8 +22,11 @@ class UserAdminView extends WView {
 	 *
 	 * @param array $model
 	 */
-	public function action_1(array $model) {
-		
+	public function shops(array $model) {
+		$this->assign($model);
+		$this->assign('require', 'wity_ajax');
+		$this->assign('require', 'bootstrap');
+		$this->assign('require', 'apps!merchantmanagement/maps_front');
 	}
 }
 
