@@ -5,16 +5,17 @@
 	  <div class="panel panel-default">
 		<div class="panel-heading">
 		  <h4 class="panel-title">
-			<a data-toggle="collapse" data-parent="#accordion" href="#{$shop.id_address}">
+			<a type="button" class="close"><i class="glyphicon glyphicon-trash small"></i></a>
+			<a data-toggle="collapse" data-parent="#accordion" href="#{$count}">
 			  {$shop.address_name}
 			</a>
 		  </h4>
 		</div>
 		<!----class="panel-collapse collapse in"--->
-		<div id="{$shop.id_address}" class="panel-collapse collapse {if({$selected}=={$shop.id_address})}in{/if}">
+		<div id="{$count}" class="panel-collapse collapse {if({$selected}=={$count})}in{/if}">
 			<form role="form" class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
 				<div class="panel-body">
-					<input type="hidden" name="id_address" value="{$shop.id_address}">
+					<input type="hidden" name="id_address" value="{$count}">
 					<div class="form-group">
 						<label for="address_name" class="col-sm-4 control-label">{lang shop_name}</label>
 						<div class="col-sm-8">
@@ -36,7 +37,7 @@
 					<div class="form-group">
 						<label for="address" class="col-sm-4 control-label">{lang address}<br>						
 							<button type="button" class="btn btn-primary btn-xs open_maps" data-target="#map_modal" data-url="/m/admin/merchantmanagement/edit/">
-							{lang show_on_map}</button>
+							{lang place_it_on_map}</button>
 							<input type="hidden" name="lat" {if(isset({$shop.lat}))}value="{$shop.lat}"{/if}>			
 							<input type="hidden" name="lng" {if(isset({$shop.lng}))}value="{$shop.lng}"{/if}>
 						</label>
@@ -86,7 +87,7 @@
 					<div class="form-group">
 						<label for="address" class="col-sm-4 control-label">{lang address}<br>						
 							<button type="button" class="btn btn-primary btn-xs open_maps" data-target="#map_modal" data-url="/m/admin/merchantmanagement/edit/">
-							{lang show_on_map}</button>
+							{lang place_it_on_map}</button>
 							<input type="hidden" name="lat" {if(isset({$lat}))}value="{$lat}"{/if}>			
 							<input type="hidden" name="lng" {if(isset({$lng}))}value="{$lng}"{/if}>
 						</label>
@@ -128,7 +129,6 @@
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9Nd8U4g3U0i3ferJwQ4t-Fd11-OIu8Yw&sensor=false">
 </script>
 <script type="text/javascript">
-
 </script>
 
 	

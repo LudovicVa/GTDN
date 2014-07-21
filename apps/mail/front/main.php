@@ -3,7 +3,7 @@
  * Mail Application - Front Controller
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * MailController is the Front Controller of the Mail Application
@@ -152,7 +152,7 @@ class MailController extends WController {
 			self::$expiration = array('expires' => $expires_date, 'one-time' => '');
 
 		}
-		
+
 		if (empty($params['response_callback'])) {
 			$params['response_callback'] = '';
 		}
@@ -175,12 +175,16 @@ class MailController extends WController {
 		$this->phpmailer->isHTML(true);
 
 		WTemplateCompiler::registerCompiler('mail_action', array('MailController', 'compile_mail_action'));
-		
+
+		// Stores hashes relative to a particular email (same order as $params['specifics'])
+		$specifics_hashes = array();
+
 		// Find mode : only defaults or defaults + while(specifics)
 		if (!empty($params['specifics']) && is_array($params['specifics'])) {
 			foreach ($params['specifics'] as $spec) {
 				$success = $success &&
-					$this->sendEmail(array_replace_recursive(
+					$this->sendEmail(
+					array_replace_recursive(
 						array(
 							'from' => '',
 							'to' => '',
@@ -193,21 +197,25 @@ class MailController extends WController {
 						),
 						$params['defaults'],
 						$spec
-					));
+					), $specifics_hashes
+				);
 			}
 		} else {
-			$success = $this->sendEmail(array_replace_recursive(
-				array(
-					'from' => '',
-					'to' => '',
-					'cc' => '',
-					'bcc' => '',
-					'attachments' => array(),
-					'subject' => '',
-					'body' => '',
-					'params' => array()
-				),
-				$params['defaults'])
+			$success = $this->sendEmail(
+				array_replace_recursive(
+					array(
+						'from' => '',
+						'to' => '',
+						'cc' => '',
+						'bcc' => '',
+						'attachments' => array(),
+						'subject' => '',
+						'body' => '',
+						'params' => array()
+					),
+					$params['defaults']
+					),
+				$specifics_hashes
 			);
 		}
 
@@ -218,11 +226,14 @@ class MailController extends WController {
 		if (!$success) {
 			return WNote::error('mail_send_error', 'mail_send_error');
 		} else {
-			return array('success' => true);
+			return array(
+				'success' => true,
+				'hashes' => $specifics_hashes
+			);
 		}
 	}
 
-	private function sendEmail(array $params) {
+	private function sendEmail(array $params, &$specifics_hashes) {
 		$success = true;
 
 		// Prepare Template compiler
@@ -274,6 +285,8 @@ class MailController extends WController {
 			$salt_part = rand();
 			self::$hash_mail = sha1(serialize($params['to']).self::$hash_mailing_list.'?*'.$salt_part);
 		}
+
+		$specifics_hashes[] = self::$hash_mail;
 
 		$params['params']['mail_app']['hash_mail'] = self::$hash_mail;
 
@@ -374,7 +387,7 @@ class MailController extends WController {
 
 		// TODO Update WNote message
 		if (!$success) {
-			WNote::error('email_add_failure', 'email_add_failure: '.$this->phpmailer->ErrorInfo);
+			WNote::error('email_add_failure', 'email_add_failure: ' . $type . ' : ' .$this->phpmailer->ErrorInfo);
 		}
 
 		return $success;

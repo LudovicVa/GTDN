@@ -3,7 +3,7 @@
  * User Application - Front Controller
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * UserController is the Front Controller of the User Application.
@@ -13,12 +13,6 @@ defined('WITYCMS_VERSION') or die('Access denied');
  * @version 0.4.0-06-03-2013
  */
 class UserController extends WController {
-	/*
-	 * Default session life when the user asks to remember his account
-	 * @type int
-	 */
-	const REMEMBER_TIME = 604800; // 1 week
-	
 	/*
 	 * @var Instance of WSession
 	 */
@@ -41,8 +35,10 @@ class UserController extends WController {
 		// Find redirect URL
 		$referer = str_replace(WRoute::getBase(), '', WRoute::getReferer());
 		$redirect_request = WRequest::get('redirect');
+		
 		if (empty($params[0])) {
 			$route = WRoute::route();
+			
 			if (!empty($redirect_request)) {
 				$redirect = $redirect_request;
 			} else if ($route['app'] != 'user') { // Login form loaded from an external application
@@ -63,13 +59,15 @@ class UserController extends WController {
 		
 		// Vars given to trigger login process?
 		$data = WRequest::getAssoc(array('nickname', 'password'));
+		//print_r($data);
 		if (!in_array(null, $data, true)) {
 			$data += WRequest::getAssoc(array('remember', 'time'));
 			$cookie = true; // cookies accepted by browser?
+			
 			if (!empty($data['nickname']) && !empty($data['password'])) {
-				// User asks to be auto loged in => change the cookie lifetime to self::REMEMBER_TIME
-				$remember_time = !empty($data['remember']) ? self::REMEMBER_TIME : abs(intval($data['time'])) * 60;
-				
+				// User asks to be auto loged in => change the cookie lifetime to WSession::REMEMBER_TIME
+				$remember_time = !empty($data['remember']) ? WSession::REMEMBER_TIME : abs(intval($data['time'])) * 60;
+
 				// Start login process
 				switch ($this->session->createSession($data['nickname'], $data['password'], $remember_time)) {
 					case WSession::LOGIN_SUCCESS:
@@ -99,6 +97,10 @@ class UserController extends WController {
 			}
 		}
 		
+		if (strpos($referer, '/admin') !== false) {
+			$this->setHeader('Location', WRoute::getReferer());
+		}
+		
 		return array('redirect' => $redirect);
 	}
 	
@@ -113,8 +115,7 @@ class UserController extends WController {
 			// Destroy the session of the user
 			$this->session->closeSession();
 		}
-		
-		$this->setHeader('Location', WRoute::getDir());
+		$this->setHeader('Location', '/');
 		return WNote::success('user_disconnected', WLang::get('user_disconnected'));
 	}
 	

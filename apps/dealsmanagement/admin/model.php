@@ -53,7 +53,9 @@ class DealsManagementAdminModel extends TransactionsModel {
 		}
 		
 		$prep = $this->db->prepare('
-			SELECT deals.id_user, id_deal, name AS merchant_name, deal_name, DATE_FORMAT(start_time,\'%d/%m/%y %k:%i\') AS start_time, DATE_FORMAT(end_time,\'%d/%m/%y %k:%i\') AS end_time, price, original_price, description, images
+			SELECT deals.id_user, id_deal, name AS merchant_name, deal_name, 
+			DATE_FORMAT(start_time,\'%d/%m/%y %k:%i\') AS start_time, DATE_FORMAT(end_time,\'%d/%m/%y %k:%i\') AS end_time, 
+			price, original_price, description, images
 			FROM deals
 			LEFT JOIN merchants
 			ON deals.id_user = merchants.id_user
@@ -91,22 +93,7 @@ class DealsManagementAdminModel extends TransactionsModel {
 		$result = $prep->fetchAll(PDO::FETCH_ASSOC);
 		return count($result) == 1;
 	}
-	
-	/*
-	*	Get merchant id from user id
-	03+
-	*/
-	public function getMerchantIdFromUser($user_id) {
-		if(!is_numeric($user_id)) {
-			return false;
-		} 		
-		$prep = $this->db->prepare('SELECT id_user FROM merchants WHERE id_user = :id');
-		$prep->bindParam(':id', $user_id);
-		$prep->execute();
-		$result = $prep->fetchAll(PDO::FETCH_ASSOC);
-		return count($result) == 1?$result[0]['id_user']:false;
-	}
-		
+			
 	/*
 	*	Get all the merchants id and name
 	*/
@@ -241,115 +228,6 @@ class DealsManagementAdminModel extends TransactionsModel {
 	}
 	
 	/**
-	*	Create paypal button for the associated data and id
-	**/
-	private function createPaypalButton(array $data, $id) {				
-		$id_merchant = $data['merchant'];
-		$deal_name = $data['deal_name'];
-		$price = $data['price'];
-		
-		$sendPayData = array(
-			"METHOD" => "BMCreateButton",
-			"VERSION" => "65.2",
-			"USER" => "contact_api1.BIGGER-stronger.com",
-			"PWD" => "YXLLQHLJ5X6BBEPQ",
-			"SIGNATURE" => "AFcWxV21C7fd0v3bYYYRCpSSRl31AoDjccjVfFYzZxC-Nf72PonVRY80",
-			"BUTTONCODE" => "HOSTED",
-			"BUTTONTYPE" => "BUYNOW",
-			"BUTTONSUBTYPE" => "SERVICES",
-			"BUTTONCOUNTRY" => "HK",
-			"BUTTONIMAGE" => "reg",
-			"BUYNOWTEXT" => "BUYNOW",
-			"L_BUTTONVAR1" => "item_number=".$id,
-			"L_BUTTONVAR2" => "item_name=".$deal_name,
-			"L_BUTTONVAR3" => "amount=".$price,
-			"L_BUTTONVAR4" => "currency_code=HKD",
-			"L_BUTTONVAR5" => "no_shipping=1",
-			"L_BUTTONVAR7" => "no_note=1",
-			"L_BUTTONVAR8" => "undefined_ quantity=0",
-			//"L_BUTTONVAR6" => "image_url=0",
-			"L_BUTTONVAR9" => "notify_url=http://nico-test.comuv.com/v2/transactions/",
-			"L_BUTTONVAR10" => "return=http://www.getthedealnow.com/#!best-deals-now-in-hong-kong/c11xx"
-		);
-		
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($curl, CURLOPT_URL, 'https://api-3t.paypal.com/nvp?'.http_build_query($sendPayData));
-		curl_setopt($curl, CURLOPT_HEADER, false);
-		$nvpPayReturn = curl_exec($curl);
-		
-		curl_close($curl);
-		if($nvpPayReturn) {
-			$response = $this->parseCurl($nvpPayReturn);
-			$this->updatePaypalId($id, $response['HOSTEDBUTTONID']);
-			return $response;
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	*	Create paypal button for the associated data and id
-	**/
-	private function updatePaypalButton($id) {
-		$prep = $this->db->prepare('
-			SELECT id_deal, deal_name, price
-			FROM deals
-			WHERE id_deal = :id_deal');
-		
-		$prep->bindParam(':id_deal', $id, PDO::PARAM_INT);
-		$prep->execute();
-		
-		$data = $prep->fetch();		
-		$deal_name 		= $data['deal_name'];
-		$price 				= $data['price'];
-		
-		$sendPayData = array(
-			"BUTTONCODE" => "HOSTED",
-			"BUTTONTYPE" => "BUYNOW",
-			"BUTTONSUBTYPE" => "SERVICES",
-			"BUTTONCOUNTRY" => "HK",
-			"BUTTONIMAGE" => "reg",
-			"BUYNOWTEXT" => "BUYNOW",
-			"L_BUTTONVAR1" => "item_number=".$id,
-			"L_BUTTONVAR2" => "item_name=".$deal_name,
-			"L_BUTTONVAR3" => "amount=".$price,
-			"L_BUTTONVAR4" => "currency_code=HKD",
-			"L_BUTTONVAR5" => "no_shipping=1",
-			"L_BUTTONVAR7" => "no_note=1",
-			"L_BUTTONVAR8" => "undefined_ quantity=0",
-			//"L_BUTTONVAR6" => "image_url=0",
-			"L_BUTTONVAR9" => "notify_url=http://nico-test.comuv.com/v2/transactions/",
-			"L_BUTTONVAR10" => "return=http://www.getthedealnow.com/#!best-deals-now-in-hong-kong/c11xx"
-		);
-		
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($curl, CURLOPT_URL, 'https://api-3t.paypal.com/nvp?'.http_build_query($sendPayData));
-		curl_setopt($curl, CURLOPT_HEADER, false);
-		$nvpPayReturn = curl_exec($curl);
-		curl_close($curl);
-		if($nvpPayReturn) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	*	Update deal email
-	**/
-	public function updatePaypalId($id_deal, $paypal_button) {
-		$prep = $this->db->prepare('UPDATE deals SET paypal_button = :paypal_button WHERE id_deal = :id_deal');
-		$prep->bindParam(':paypal_button', $paypal_button);
-		$prep->bindParam(':id_deal', $id_deal);
-		
-		return $prep->execute();
-	}
-	
-	/**
 	*	Update deal email
 	**/
 	public function updateEmail2Customer($id_deal, $subject, $body) {
@@ -359,18 +237,6 @@ class DealsManagementAdminModel extends TransactionsModel {
 		$prep->bindParam(':body', $body);
 		
 		return $prep->execute();
-	}
-	
-	/**
-	* Parse cURL response
-	**/
-	public function parseCurl($response) {
-		$array = explode('&', $response);
-		foreach($array as $value) {
-			$sub_array = explode('=', $value);
-			$result[$sub_array[0]] = utf8_decode(urldecode($sub_array[1]));
-		}
-		return $result;
 	}
 }
 

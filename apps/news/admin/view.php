@@ -3,7 +3,7 @@
  * News Application - Admin View
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * NewsAdminView is the Admin View of the News Application
@@ -32,9 +32,8 @@ class NewsAdminView extends WView {
 
 	public function news_form($model) {
 		// JS / CSS
-		$this->assign('css', "/libraries/wysihtml5-bootstrap/bootstrap-wysihtml5-0.0.2.css");
 		$this->assign('require', 'apps!news/add_or_edit');
-		$this->assign('require', 'wysihtml5');
+		$this->assign('js', "/libraries/ckeditor-4.3.1/ckeditor.js");
 
 		// Assign site URL for permalink management
 		$this->assign('site_url', WRoute::getBase() . '/news/');
@@ -82,7 +81,7 @@ class NewsAdminView extends WView {
 	}
 
 	public function category_delete($model) {
-		$this->assign('confirm_delete_url', "/admin/news/category_delete/".$model['cat_id']."/confirm");
+		$this->assign('confirm_delete_url', "/admin/news/category_delete/".$model['cid']."/confirm");
 	}
 
 	public function categories_manager($model) {

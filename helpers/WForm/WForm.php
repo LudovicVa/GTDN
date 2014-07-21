@@ -25,7 +25,6 @@ class WForm {
 		WTemplateCompiler::registerCompiler('WFormFields', array('WForm', 'compile_nodes'));		
 		
 		$view->assign('WForm_' . $name ,$form_data);
-		$view->assign('WForm_' . $name ,$form_data);
 	}
 	
 	private static $form_name;
@@ -34,7 +33,6 @@ class WForm {
 		$body = "";
 		if (!empty($args)) {
 			$form_name = $args;
-			$class = "form-horizontal wform";
 			
 			//Prepare Template compiler
 			if (empty(self::$tpl)) {
@@ -43,13 +41,12 @@ class WForm {
 			
 			self::$form_name = $form_name;			
 						
-			$href = 'apps/config/admin/templates/form.html';
+			$href = 'helpers/WForm/templates/form.html';
 			$body = '<?php $this->tpl_vars[\'WForm\'] = $this->tpl_vars[\'WForm_' . $form_name . '\']; ?>' . "\n";
 			$body .= self::$tpl->compile($href);
 			
-			
 		}
-
+	
 		return $body;
 	}
 	

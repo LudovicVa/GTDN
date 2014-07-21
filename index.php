@@ -8,10 +8,11 @@
  * @author Julien Blatecky <julien.blatecky@creatiwity.net>
  * @version 0.4.0
  */
-
+ 
 /**
  * WityCMS version number
  */
+define('IN_WITY', true);
 define('WITYCMS_VERSION', '0.4.0');
 
 /**

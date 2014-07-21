@@ -30,8 +30,8 @@ class DealsManagementAdminController extends WController {
 		}
 		
 		$super_admin = $_SESSION['access'] == 'all';
-		if(!$super_admin) {
-			$merchant_id = $this->model->getMerchantIdFromUser($_SESSION['userid']);
+		if(!$super_admin && $this->model->isMerchantId($_SESSION['userid'])) {
+			$merchant_id =$_SESSION['userid'];
 		} else {
 			$merchant_id = false;
 		}

@@ -7,19 +7,24 @@ $manifest = array (
   'icone' => '',
   'actions' => 
   array (
-    'login' => 
+    'shops' => 
     array (
-      'description' => 'login',
+      'description' => 'shops',
       'requires' => 
       array (
+        0 => 'merchant',
+      ),
+    ),
+    'profile' => 
+    array (
+      'description' => 'profile',
+      'requires' => 
+      array (
+        0 => 'merchant',
       ),
     ),
   ),
-  'default' => 'login',
-  'alias' => 
-  array (
-    'connexion' => 'login',
-  ),
+  'default' => 'shops',
   'admin' => 
   array (
     'listing' => 
@@ -68,11 +73,7 @@ $manifest = array (
   'permissions' => 
   array (
     0 => 'admin',
-    1 => 'add',
-    2 => 'edit',
-    3 => 'delete',
-    4 => 'group_manager',
-    5 => 'config',
+    1 => 'merchant',
   ),
   'default_lang' => '',
 );

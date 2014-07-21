@@ -1,0 +1,32 @@
+<div class="row">
+		<div class="col-md-12">		
+			<h2 class="text-center">{lang edit_title}</span></h2>
+		</div>	  
+		
+		<form role="form" method="POST" action="/m/dealsmanagement/" enctype="multipart/form-data">
+			<div class="row form-horizontal" style="padding-top:15px">
+				<div class="form-group">
+					<label for="lat" class="col-sm-4 control-label">{lang lat}</label>
+					<div class="col-sm-8">
+					  <input type="text" class="form-control" id="lat" name="lat" "{lang lat}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="long" class="col-sm-4 control-label">{lang long}</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="long" name="long" placeholder="{lang long}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="distance" class="col-sm-4 control-label">{lang distance}</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="distance" name="dist"placeholder="{lang distance}">
+					</div>
+				</div>
+			  <div class="modal-footer">
+				<a href="/dealsmanagement/editdeals/" class="btn btn-default" data-dismiss="modal">{lang cancel}</a>
+				<button type="submit" id="confirm" class="btn btn-primary" data-dismiss="modal">{lang confirm}</button>
+			  </div>	
+		</div>
+	</form>
+</div>	

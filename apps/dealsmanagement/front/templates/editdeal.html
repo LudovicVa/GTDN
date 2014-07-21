@@ -9,6 +9,7 @@
 		</ul>
 		
 		<form role="form" method="POST" action="" enctype="multipart/form-data">
+			{if(isset({$id}))}<input type="hidden" name="id" value="{$id}">{/if}
 			<div class="tab-content">
 				<div class="tab-pane active" id="general">
 					<div class="row form-horizontal" style="padding-top:15px">
@@ -52,6 +53,16 @@
 									<input type='text' class="form-control" name="end_time" data-format="DD/MM/YYYY HH:mm" {if(isset({$end_time}))}value="{$end_time}"{/if}/>
 									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="shop" class="col-sm-4 control-label">{lang available}</label>
+							<div class="col-sm-8">
+								<select class="form-control multiselect" multiple="multiple" id="shop" name="shop[]">
+									{for $count, $shop_ in $all_shop}
+									  <option value="{$shop_.id_address}"{if(isset({$shop}) && in_array({$shop_.id_address}, {$shop}))} selected{/if}>{$shop_.address_name}</option>
+									{/for}
+								</select>
 							</div>
 						</div>
 					</div>

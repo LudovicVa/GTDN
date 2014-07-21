@@ -16,13 +16,16 @@ class DealsManagementView extends WView {
 	public function __construct() {
 		parent::__construct();
 	}
+	
+	public function dealslisting(array $model) {		
+		$this->assign($model);		
+	}
 
 	public function editdeals(array $model) {
 		$this->assign('css', '/apps/dealsmanagement/front/css/edit.css');
 		$this->assign('css', '/libraries/datepicker/css/bootstrap-datetimepicker.min.css');
 		
-		$this->assign($model);
-		
+		$this->assign($model);		
 	}
 	
 	public function editdeal(array $model) {
@@ -30,6 +33,7 @@ class DealsManagementView extends WView {
 		$this->assign('require', 'moment');
 		$this->assign('require', 'date_picker');
 		$this->assign('require', 'extend');
+		$this->assign('require', 'multiselect');
 		$this->assign('css', '/apps/dealsmanagement/front/css/edit.css');
 		$this->assign('css', '/libraries/datepicker/css/bootstrap-datetimepicker.min.css');
 		$this->assign('css', '/libraries/extend/css/jasny-bootstrap.min.css');

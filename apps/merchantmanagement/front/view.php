@@ -24,9 +24,14 @@ class MerchantManagementView extends WView {
 	 */
 	public function shops(array $model) {
 		$this->assign($model);
-		$this->assign('require', 'wity_ajax');
-		$this->assign('require', 'bootstrap');
 		$this->assign('require', 'apps!merchantmanagement/maps_front');
+	}
+	
+	/**
+	**/
+	public function profile(array $model) {
+		$this->assign($model);
+		$this->assign('require', 'apps!merchantmanagement/multiple');
 	}
 }
 

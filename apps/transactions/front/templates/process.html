@@ -1,0 +1,16 @@
+<div class="wity-app">
+	{if({$status} == TransactionsController::NO_TRANSACTION)}
+	    <h2 style="text-align:center">Click <a href="http://www.getthedealnow.com/">here</a> to go back to Get The Deal Now</h2>
+	{elseif({$status} == TransactionsController::EMAIL_SEND)}
+		<h3 style="text-align:center">Your deal will be ready soon ! </h3>
+		<h4 style="text-align:center">You will receive an email in a few minutes with all the necessary information to redeem your deal as soon as possible !</h4>
+		<h4 style="text-align:center">If you encounter any issue, don't hesitate to contact us at <a href="mailto:contact@getthedealnow.com">contact@getthedealnow.com</a></h4>
+	    <h2 style="text-align:center">Click <a href="http://www.getthedealnow.com/">here</a> to go back to Get The Deal Now</h2>
+	{elseif({$status} == TransactionsController::ERROR_INIT_PAYMENT)}
+		<h3 style="text-align:center">Sorry, we are having small issues initiating the transaction. Our teams are working on this issue but don't hesitate to contact the support at <a href="mailto:support@getthedealnow.com">support@getthedealnow.com</a></h3>
+	{elseif({$status} == TransactionsController::PAYMENT_PENDING)}
+		<h3 style="text-align:center">Sorry, it seems like the payment can not be completed. Our teams are working on this issue but don't hesitate to contact the support at <a href="mailto:support@getthedealnow.com">support@getthedealnow.com</a></h3>
+	{elseif(true)}
+		<h3 style="text-align:center">Sorry, an error occurred while confirming the payment. Our teams are working on this issue but don't hesitate to contact the support at <a href="mailto:support@getthedealnow.com">support@getthedealnow.com</a></h3>
+	{/if}
+</div>

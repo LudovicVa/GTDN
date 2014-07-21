@@ -1,4 +1,4 @@
-require(['jquery', 'wity_ajax', 'date_picker'], function($, wity_ajax) {
+require(['jquery', 'wity_ajax', 'date_picker', 'multiselect'], function($, wity_ajax) {
 	$(document).ready(function(){		
 		var modal = $("#edition");
 		var start_date = $('#start_time');
@@ -20,6 +20,11 @@ require(['jquery', 'wity_ajax', 'date_picker'], function($, wity_ajax) {
 		
 		start_date.on('change.dp', function(value) {
 			end_date.data("DateTimePicker").setStartDate(start_date.data("DateTimePicker").getDate());
+		});
+		
+		$('.multiselect').multiselect({		
+			includeSelectAllOption:true,
+			selectAllText:'In all of your shops'
 		});
 	});	
 });

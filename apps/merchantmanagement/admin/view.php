@@ -27,12 +27,12 @@ class MerchantManagementAdminView extends WView {
 	 * @param array $model
 	 */
 	public function listing(array $model) {
-		$this->assign('require', '{$base_url}/libraries/bootstrap3-editable/inputs-ext/password/password.js');		
-		$this->assign('require', '{$base_url}/libraries/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js');		
-		$this->assign('require', '{$base_url}/libraries/gtdn/editable-table.js');
+		$this->assign('require', 'gtdn/password');		
+		//$this->assign('require', '{$base_url}/libraries/bootstrap3-editable/inputs-ext/wysihtml5/wysihtml5.js');		
+		$this->assign('require', 'gtdn/editable-table');
 		$this->assign('require', 'wity_ajax');
-		$this->assign('require', 'bootstrap-modal-2.2.0/bootstrap3-patch');
-		$this->assign('require', 'bootstrap-modal-2.2.0/bootstrap-modal');
+		$this->assign('require', 'modal');
+		$this->assign('require', 'bootstrap-modal-core');
 		$this->assign('require', 'apps!merchantmanagement/maps');
 		$this->assign('users', $model['users']);
 		$this->assign($model['sorting_tpl']);

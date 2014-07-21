@@ -30,7 +30,7 @@ class DealsManagementAdminView extends WView {
 		
 		$this->assign('require', 'gtdn/moment.min');
 		$this->assign('require', 'gtdn/editable-table');
-		$this->assign('require', '{$base_url}/apps/dealsmanagement/admin/js/script.js');
+		$this->assign('require', 'apps!dealsmanagement/script');
 		
 		$this->assign('css', '/libraries/bootstrap-switch/css/bootstrap-switch.min.css');
 		$this->assign($model);

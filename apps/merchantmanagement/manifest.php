@@ -14,6 +14,7 @@
 	
 	<!-- Front actions -->
 	<action default="default" requires="merchant">shops</action>
+	<action requires="merchant">profile</action>
 	
 	<!-- Admin actions -->
 	<admin>

@@ -9,6 +9,7 @@ $route = array (
   'default_admin' => 'admin/pages',
   'custom' => 
   array (
+	'/profile' => '/merchantmanagement/'
   ),
 );
 

@@ -22,8 +22,8 @@
 	<app_config name="paypal_password" default='1391347621'/>
 	<app_config name="paypal_signature" default='A2IrunCdioRsLV6XIMPCj0qE48pKAMAcLUgdIPbI0l.ZglvqMbfiTcQc'/>
 	<app_config name="paypal_currency_code" default='HKD'/>
-	<app_config name="paypal_return" default='http://dev.getthedealnow.com/transactions/process/'/>
-	<app_config name="paypal_cancel" default='http://dev.getthedealnow.com/transactions/cancel'/>
+	<app_config name="paypal_return" default='transactions/process/'/>
+	<app_config name="paypal_cancel" default='transactions/cancel'/>
 	
 	<!-- Front actions -->
 	<action default="default">ipn</action>

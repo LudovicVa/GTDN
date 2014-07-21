@@ -7,7 +7,27 @@
 	<!-- General info-->
 	<item id="price">Price</item>
 	<item id="original_price">Original price</item>
+	<item id="deal_name">Deal name</item>
+	<item id="start_time">Deal available from</item>
+	<item id="end_time">Deal available until</item>
+	<item id="available">Available</item>
 	
+	<!-- Error while saving -->
+	<item id='deal_created'>The deal is successfully created</item>
+	<item id='new_info_saved'>The deal information have been updated</item>
+	<item id='no_images'>An image has to be provided, please select an image</item>
+	<item id='invalid_deal_name'>The deal must have an none empty name</item>
+	<item id='invalid_price'>The price must be a number</item>
+	<item id='invalid_original_price'>The original price must be a number</item>
+	<item id='price_above_original'>The original price cannot be bigger than the price</item>
+	<item id='change_start_after_deal_begin'>The starting date/time cannot be change after the deal was valid</item>
+	<item id='invalid_start_time'>The start date/time is invalid</item>
+	<item id='start_time_before_now'>The start date/time is set to before present</item>
+	<item id='cannot_edit_finished_deal'>A closed deal cannot be modified. Please clone the deal if you wish to restart it.</item>
+	<item id='invalid_end_time'>The end date/time is invalid</item>
+	<item id='end_time_before_now'>The end date/time is set to before present</item>
+	<item id='end_before_start'>The start date/time is set to before the end date</item>
+	<item id='upload_error'>An error occured while uploading the file. Please retry.</item>
 	
 	<!-- Description -->
 	<item id="note_desc">Describe your product and the content of your deal. Be precise and consice.</item> 

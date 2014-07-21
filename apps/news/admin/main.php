@@ -3,7 +3,7 @@
  * News Application - Admin Controller
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * NewsAdminController is the Admin Controller of the News Application
@@ -45,7 +45,7 @@ class NewsAdminController extends WController {
 		$sort = $sortingHelper->findSorting($sort_by, $sens);
 		
 		return array(
-			'data'         => $this->model->getNewsList(($page-1)*$n, $n, $sort[0], $sort[1]),
+			'data'         => $this->model->getNewsList(($page-1)*$n, $n, $sort[0], $sort[1] == 'ASC'),
 			'total'        => $this->model->countNews(),
 			'current_page' => $page,
 			'per_page'     => $n,
@@ -168,7 +168,7 @@ class NewsAdminController extends WController {
 				$this->model->deleteNews($news_id);
 				
 				$this->setHeader('Location', WRoute::getDir() . '/admin/news');
-				WNote::success('article_deleted', WLang::get('article_deleted', $data['news_title']));
+				WNote::success('article_deleted', WLang::get('article_deleted', $db_data['news_title']));
 			}
 			
 			return $db_data;
