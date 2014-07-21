@@ -1,33 +1,32 @@
 {
-	"baseUrl": "{$base_url}/libraries",
+	"baseUrl": "{$wity_base_url}/libraries",
 	"paths": {
 		"apps": "witycms/apps.plugin",
 		"themes": "witycms/themes.plugin",
 		"jquery": "jquery-2.0.3/jquery-2.0.3",
-		"bootstrap": "bootstrap-3.0.0/js/bootstrap",
+		"bootstrap": "bootstrap-3.1.0/js/bootstrap",
 		"modal": "bootstrap-modal-2.2.0/js/bootstrap3-patch",
+		"modal-manager": "bootstrap-modal-2.2.0/js/bootstrap-modalmanager",
 		"bootstrap-modal-core": "bootstrap-modal-2.2.0/js/bootstrap-modal",
 		"bootstrap3-editable": "bootstrap3-editable/js/bootstrap-editable",
-		"wysihtml5": "wysihtml5-bootstrap/wrapper",
-		"wysihtml5-bootstrap-plugin": "wysihtml5-bootstrap/bootstrap-wysihtml5-0.0.2.min",
-		"wysihtml5-core": "wysihtml5-bootstrap/wysihtml5.min",
 		"bootstrap-switch": "bootstrap-switch/js/bootstrap-switch",
 		"wity_ajax":"gtdn/wity_ajax",
 		"moment":"gtdn/moment.min",
 		"extend":"extend/js/jasny-bootstrap.min",
-		"date_picker":"datepicker/js/bootstrap-datetimepicker.min"
+		"date_picker":"datepicker/js/bootstrap-datetimepicker.min",
+		"multiselect":"bootstrap-multiselect/js/bootstrap-multiselect.min"
 	},
 	"shim": {
 		"bootstrap": ["jquery"],
-		"wysihtml5": ["jquery", "wysihtml5-bootstrap-plugin"],
-		"wysihtml5-bootstrap-plugin": ["wysihtml5-core"],
-		"bootstrap-modal-core": ["jquery", "bootstrap", "bootstrap-modal-2.2.0/js/bootstrap-modalmanager"],
+		"bootstrap-modal-core": ["jquery", "bootstrap", "modal-manager"],
+		"modal-manager": ["jquery"],
 		"bootstrap3-editable": ["jquery", "bootstrap", "moment"],
 		"date_picker": ["jquery", "bootstrap"],
 		"extend": ["jquery", "bootstrap"],
 		"bootstrap-datetimepicker": ["jquery", "bootstrap","moment"],
 		"bootstrap-switch": ["jquery"],
-		"wity_ajax": ["jquery"]
+		"wity_ajax": ["jquery"],
+		"multiselect": ["jquery", "bootstrap"]
 	},
 	"waitSeconds": 15
 }
