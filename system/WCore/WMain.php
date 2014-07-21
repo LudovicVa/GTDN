@@ -3,7 +3,7 @@
  * WMain.php
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 require_once SYS_DIR.'WCore'.DS.'WController.php';
 require_once SYS_DIR.'WCore'.DS.'WView.php';
@@ -35,6 +35,9 @@ class WMain {
 		// Initializing lang
 		WLang::init();
 		WLang::declareLangDir(SYS_DIR.'lang');
+
+		// Setup Template
+		$this->setupTemplate();
 
 		// Initializing WRetrever
 		WRetriever::init();
@@ -71,7 +74,7 @@ class WMain {
 				$response->renderModelView($model, $view);
 				break;
 
-			case 'o': // Only Model but nothing returned
+			case 'o': // Only Model triggered and calculated but nothing returned
 				break;
 
 			default: // Render in a theme
@@ -116,12 +119,13 @@ class WMain {
 				$error = true;
 			}
 		}
+		
 		if ($error) {
 			$route = WRoute::route();
 
 			if ($route['app'] != 'media') {
 				header('HTTP/1.0 404 Not Found');
-				WNote::error(404, 'The resource could not be found.', 'die');
+				WNote::error(404, WLang::get('error_404'), 'die');
 			}
 		}
 	}
@@ -159,6 +163,45 @@ class WMain {
 
 		// Change MySQL timezone
 		WSystem::getDB()->query("SET time_zone = '".$plus.$offset.":00'");
+	}
+
+	/**
+	 * Template configuration with system variables.
+	 */
+	private function setupTemplate() {
+		$tpl = WSystem::getTemplate();
+
+		$site_name = WConfig::get('config.site_name');
+		$route = WRoute::route();
+
+		// Setup system template variables with $wity_ prefix
+		$tpl_vars = array(
+			'wity_base_url'         => WRoute::getBase(),
+			'wity_site_name'        => $site_name,
+			'wity_site_subtitle'    => $site_name,
+			'wity_page_title'       => $site_name,
+			'wity_page_keywords'    => WConfig::get('config.keywords'),
+			'wity_page_description' => WConfig::get('config.description'),
+			'wity_user'             => false,
+			'wity_home'             => WRoute::getQuery() == '/',
+			'wity_app'              => $route['app'],
+			'wity_action'         => isset($route['params'][0])?$route['params'][0]:''
+		);
+
+		if (WSession::isConnected()) {
+			$tpl_vars['wity_user'] = true;
+			$tpl_vars += array(
+				'wity_user_nickname'  => $_SESSION['nickname'],
+				'wity_user_email'     => $_SESSION['email'],
+				'wity_user_groupe'    => $_SESSION['groupe'],
+				'wity_user_lang'      => $_SESSION['lang'],
+				'wity_user_firstname' => $_SESSION['firstname'],
+				'wity_user_lastname'  => $_SESSION['lastname'],
+				'wity_user_access'    => $_SESSION['access']
+			);
+		}
+
+		$tpl->assign($tpl_vars, null, true);
 	}
 }
 

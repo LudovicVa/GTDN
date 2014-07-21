@@ -3,7 +3,7 @@
  * WNote.php
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * WNote manages all notes : stores, displays, ...
@@ -257,6 +257,7 @@ class WNote {
 	 */
 	public static function get($pattern = '*') {
 		$result = array();
+		
 		if (!empty($_SESSION['notes'])) {
 			foreach ($_SESSION['notes'] as $code => $note) {
 				if ($pattern == '*' || $code == $pattern || (strpos($pattern, '*') !== false && preg_match('#'.str_replace('*', '.*', $pattern).'#', $code))) {
@@ -266,6 +267,7 @@ class WNote {
 				}
 			}
 		}
+		
 		return $result;
 	}
 	

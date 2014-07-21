@@ -3,7 +3,7 @@
  * WRequest.php
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * WRequest manages all input variables.
@@ -13,6 +13,9 @@ defined('WITYCMS_VERSION') or die('Access denied');
  * @version 0.4.0-29-12-2011
  */
 class WRequest {
+	const NOT_EMPTY 	= 'NOT_EMPTY';
+	const REG_EXP 		= 'REG_EXP';
+	
 	 /**
 	 * @var array Contains all checked variables to avoid infinite loop
 	 */
@@ -116,7 +119,81 @@ class WRequest {
 
 		return $result;
 	}
+	
+	/**
+	 * Returns an associative array of values in which keys are the $names, using check method defines in value associated with it.
+	 * Any error from check are stored in the 'errors' field of the returned array.
+	 *
+	 * @param array  $names  table associating variable names with a check method
+	 * @param mixed  $default optional default values
+	 * @param string $hash    name of the method used to send
+	 * @return array array of values in which keys are the $names
+	 */
+	public static function getAssocCheck(array $names, $default = null, $hash = 'REQUEST') {
+		// Data hash
+		switch (strtoupper($hash)) {
+			case 'GET':
+				$data = &$_GET;
+				break;
+			case 'POST':
+				$data = &$_POST;
+				break;
+			case 'FILES':
+				$data = &$_FILES;
+				break;
+			case 'COOKIE':
+				$data = &$_COOKIE;
+				break;
+			default:
+				$data = &$_REQUEST;
+				$hash = 'REQUEST';
+				break;
+		}
+		$result['errors'] = array();
+		
+		// Going through the asked values in order to returns the array
+		$result = array();
+		foreach ($names as $name => $check) {
+			$value = self::getValue($data, $name, isset($default[$name]) ? $default[$name] : null, $hash);
+			$result[$name] = $value;
+			if(is_array($check)) {
+				$check = self::checkValue($value, $check['type'], $check['data']);
+			} else {
+				$check = self::checkValue($value, $check);
+			}
+			if(!$check) {
+				$result['errors'][] = $name;
+			}
+		}
 
+		return $result;
+	}
+
+	/**
+	 * Returns an associative array of values in which keys are the $names, using check method defines in value associated with it
+	 *
+	 * @param array  $names  table associating variable names with a check method
+	 * @param mixed  $default optional default values
+	 * @param string $hash    name of the method used to send
+	 * @return array array of values in which keys are the $names
+	 */
+	public static function checkValue($value, $check, $data = null) {
+		// Data hash
+		switch (strtoupper($check)) {
+			case 'NOT_EMPTY':
+				return !is_null($value) & !empty($value);
+			case 'REG_EXP':
+				return preg_match($data, $value);
+			default:
+				//Try to call method $check in $data
+				if(!is_null($data)) {
+					return $data->$check($value);
+				} else {
+					return false;
+				}
+		}
+	}
+	
 	/**
 	 * Returns the checked value associated to $name
 	 *
@@ -215,11 +292,25 @@ class WRequest {
 				$variable[$key] = self::filter($val);
 			}
 		} else {
-			// No special char direct input
-			$variable = str_replace('<>#', '', $variable);
-			// $variable = str_replace('&lt;script', '', $variable); // maybe XSS
-			// $variable = stripslashes(htmlspecialchars($variable));
-			$variable = htmlspecialchars($variable);
+			// Prevent XSS abuse
+			$variable = preg_replace_callback('#</?([a-z]+)(\s.*)?/?>#', function($matches) {
+				// Allowed tags
+				if (in_array($matches[1], array(
+					'b', 'strong', 'small', 'i', 'em', 'u', 's', 'sub', 'sup', 'a', 'img', 'br', 
+					'font', 'span', 'blockquote', 'q', 'abbr', 'address', 'code', 
+					'audio', 'video', 'source', 'iframe', 
+					'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
+					'ul', 'ol', 'li', 'dl', 'dt', 'dd', 
+					'div', 'p', 'var', 
+					'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'colgroup', 'col', 
+					'section', 'article', 'aside'))) {
+					return $matches[0];
+				} else if (in_array($matches[1], array('script', 'link'))) {
+					return '';
+				} else {
+					return htmlentities($matches[0]);
+				}
+			}, $variable);
 		}
 
 		return $variable;

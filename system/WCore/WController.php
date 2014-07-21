@@ -3,14 +3,15 @@
  * WController.php
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * WController is the base class that will be inherited by all the applications.
  *
  * @package System\WCore
  * @author Johan Dufau <johan.dufau@creatiwity.net>
- * @version 0.4.0-12-10-2013
+ * @author Julien Blatecky <julien.blatecky@creatiwity.net>
+ * @version 0.4.0-02-02-2014
  */
 abstract class WController {
 	/**
@@ -67,7 +68,7 @@ abstract class WController {
 		// Parse the manifest
 		$this->manifest = $this->loadManifest($this->getAppName());
 		if (empty($this->manifest)) {
-			WNote::error('app_no_manifest', 'The manifest of the application "'.$this->getAppName().'" cannot be found.');
+			WNote::error('app_no_manifest', WLang::get('error_app_no_manifest', $this->getAppName()));
 		}
 
 		// Automatically declare the language directory
@@ -83,6 +84,8 @@ abstract class WController {
 	 * Most of the time, the action given in URL is used.
 	 */
 	public function launch($action, array $params = array()) {
+		$action = preg_replace('#[^a-zA-Z]+#', '_', $action);
+		
 		// Trigger the corresponding method for the action given in URL
 		return $this->forward($action, $params);
 	}
@@ -98,7 +101,7 @@ abstract class WController {
 		if (!empty($action)) {
 			$access_result = $this->hasAccess($this->getAppName(), $action);
 
-			if ($access_result === true) {
+			if ($access_result) {
 				$this->action = $action;
 
 				// Theme configuration for admin
@@ -106,7 +109,6 @@ abstract class WController {
 					// These are template variables => direct assign in WTemplate
 					$tpl = WSystem::getTemplate();
 					$tpl->assign('appsList', $this->getAdminApps());
-					$tpl->assign('userNickname', @$_SESSION['nickname']);
 
 					$manifest = $this->getManifest();
 					$action_asked = $this->getTriggeredAction();
@@ -114,7 +116,7 @@ abstract class WController {
 					$tpl->assign(array(
 						'appSelected' => $this->getAppName(),
 						'actionsList' => $manifest['admin'],
-						'adminMenu' => $manifest['admin_menu'],
+						'adminMenu'   => $manifest['admin_menu'],
 						'actionAsked' => $action_asked
 					));
 					$this->view->assign('page_title', sprintf('Admin &raquo; %s%s',
@@ -122,35 +124,28 @@ abstract class WController {
 						isset($manifest['admin'][$action_asked]) ? ' &raquo; '.WLang::get($manifest['admin'][$action_asked]['description']) : ''
 					));
 				}
-				$tpl = WSystem::getTemplate();
-				$tpl->assign(array(
-						'currentApp' => $this->getAppName(),
-						'currentAction' => $action
-				));
 
 				// Execute action
 				if (method_exists($this, $action)) {
 					return $this->$action($params);
 				} else {
-					WNote::error('app_no_method', 'The method corresponding to the action "'.$action.'" cannot be found in '.$this->getAppName().' application.', 'debug');
+					WNote::error('app_no_method', WLang::get('error_app_no_method', $action, $this->getAppName()), 'debug');
 					return array();
 				}
 			} else {
 				// Display login form if not connected
 				if (!WSession::isConnected()) {
-					WNote::info('user_login_required', 'This area requires to be logged in.', 'assign');
+					WNote::info('user_login_required', WLang::get('info_user_login_required'));
 					$userView = WRetriever::getView('user', array('login'));
 					$this->setView($userView);
+				} else if (is_array($access_result)) {
+					return $access_result; // $this->hasAccess() returned a note
 				} else {
-					if (is_array($access_result)) {
-						return $access_result; // hasAccess returned a note
-					} else {
-						return WNote::error('app_no_access', 'You do not have access to the application '.$this->getAppName().'.');
-					}
+					return WNote::error('app_no_access', WLang::get('error_app_no_access', $this->action, $this->getAppName()));
 				}
 			}
 		} else {
-			return WNote::error('app_no_suitable_action', 'No suitable action to trigger was found in the application '.$this->getAppName().'.');
+			return WNote::error('app_no_suitable_action', WLang::get('error_app_no_suitable_action', $this->getAppName()));
 		}
 	}
 
@@ -294,7 +289,6 @@ abstract class WController {
 		if (is_null($manifest)) {
 			$manifest_file = APPS_DIR.$app_name.DS.'manifest.php';
 			if (!file_exists($manifest_file)) {
-				// WNote::error('controller_no_manifest', 'Unable to find the manifest "'.$manifest_file.'".', 'debug');
 				return null;
 			}
 
@@ -308,13 +302,14 @@ abstract class WController {
 			if (file_exists($cache_file) && @filemtime($cache_file) > @filemtime($manifest_file)) {
 				include $cache_file;
 			}
+
 			if (!isset($manifest)) { // cache failed
 				$manifest = $this->parseManifest($manifest_file);
 
 				if (is_writable(CACHE_DIR.'manifests')) {
 					// Opening
 					if (!($handler = fopen($cache_file, 'w'))) {
-						WNote::error('controller_create_manifest_cache', 'Unable to open the cache target "'.$cache_file.'".', 'debug');
+						WNote::error('cache_manifest_failed', WLang::get('error_cache_manifest_failed', $cache_file), 'debug');
 					}
 
 					// Writing
@@ -322,8 +317,10 @@ abstract class WController {
 					fclose($handler);
 				}
 			}
+
 			WConfig::set('manifest.'.$app_name, $manifest);
 		}
+		
 		return $manifest;
 	}
 
@@ -502,10 +499,11 @@ abstract class WController {
 			if ($_SESSION['access'] == 'all') {
 				return true;
 			} else if (isset($_SESSION['access'][$app]) && is_array($_SESSION['access'][$app]) && in_array('admin', $_SESSION['access'][$app])) {
-				if (empty($action)) { // Asking for application access
+				if (empty($action)) {
+					// Asking for application access
 					return true;
 				} else if (isset($manifest['admin'][$action])) {
-					// Check permissions
+					// Check that the current user possesses all the required permissions
 					foreach ($manifest['admin'][$action]['requires'] as $req) {
 						switch ($req) {
 							case 'connected':
@@ -513,8 +511,8 @@ abstract class WController {
 								break;
 
 							default:
-								if (!isset($_SESSION['access'][$app]) || !in_array($req, $_SESSION['access'][$app])) {
-									return WNote::error('app_no_access', 'You need more privileges to access the action '.$action.' in the application '.$app.'.');
+								if (!in_array($req, $_SESSION['access'][$app])) {
+									return false;
 								}
 								break;
 						}
@@ -533,7 +531,7 @@ abstract class WController {
 				}
 			}
 			
-			// Admin Supreme
+			// Supreme Admin -> access granted
 			if (isset($_SESSION['access']) && $_SESSION['access'] == 'all') {
 				return true;
 			} else if (isset($manifest['actions'][$action])) {
@@ -542,7 +540,7 @@ abstract class WController {
 					switch ($req) {
 						case 'not-connected':
 							if (WSession::isConnected()) {
-								return WNote::error('app_logout_required', 'The '.$action.' action of the application '.$app.' requires to be loged out.');
+								return WNote::error('app_logout_required', WLang::get('error_app_logout_required', $action, $app));
 							}
 							break;
 
@@ -553,8 +551,8 @@ abstract class WController {
 							break;
 
 						default:
-							if (!isset($_SESSION['access'][$app]) || !in_array($req, $_SESSION['access'][$app])) {
-								return WNote::error('app_no_access', 'You need more privileges to access the action '.$action.' in the application '.$app.'.');
+							if (!WSession::isConnected() || !isset($_SESSION['access'][$app]) || !in_array($req, $_SESSION['access'][$app])) {
+								return false;
 							}
 							break;
 					}

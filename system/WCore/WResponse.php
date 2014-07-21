@@ -3,7 +3,7 @@
  * WResponse.php
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * WResponse compiles the final render of WityCMS that will be sent to the browser.
@@ -36,7 +36,7 @@ class WResponse {
 			$this->theme_name = $theme;
 			$this->theme_dir = str_replace(WITY_PATH, '', THEMES_DIR).$theme.DS;
 		} else {
-			WNote::error('response_set_theme', "WResponse::setTheme(): The theme \"".$theme."\" does not exist.", 'plain');
+			WNote::error('theme_not_found', WLang::get('error_theme_not_found', $theme), 'plain');
 			return false;
 		}
 
@@ -80,17 +80,6 @@ class WResponse {
 			throw new Exception("WResponse::render(): WTemplate cannot be loaded.");
 		}
 
-		// Default template variables
-		$tpl->assign('base_url', WRoute::getBase());
-
-		$site_name = WConfig::get('config.site_name');
-		$tpl->assign('site_name', $site_name);
-
-		$page_title = $tpl->getVar('page_title');
-		if (empty($page_title)) { // Do not overwrite a value set by user
-			$tpl->assign('page_title', $site_name);
-		}
-
 		// Load in priority theme asked by the view
 		$view_theme = $view->getTheme();
 		if (empty($view_theme) || !$this->setTheme($view_theme)) {
@@ -99,7 +88,7 @@ class WResponse {
 
 		// Check theme
 		if (empty($this->theme_name)) {
-			WNote::error('response_theme', "WResponse::render(): No theme given or it was not found.", 'plain');
+			WNote::error('theme_empty', WLang::get('error_theme_empty'), 'plain');
 		}
 
 		// Flush the notes waiting for their own view
@@ -124,18 +113,25 @@ class WResponse {
 			// Handle notes
 			$tpl->assign('notes', WNote::getView(WNote::get('*'))->render());
 
+			$html = $tpl->parse($themeMainFile);
+
 			// Render require configuration
 			$require = $tpl->parseString($tpl->getVar('require'));
 
-			$html = $tpl->parse($themeMainFile);
-			
+			// Insert CSS + script configuration
+			$css = $tpl->getVar('css');
+			$script = $tpl->getVar('js');
+			$html = str_replace('</head>', $css.$script."\n".'</head>', $html);
+
+			// Insert requireJS part
+			$html = $this->insertRequireJS($html, $require);
+
 			// Absolute links fix
 			$html = $this->absoluteLinkFix($html);
 			
-			// Insert requireJS part
-			echo $this->insertRequireJS($html, $require);
+			echo $html;
 		} catch (Exception $e) {
-			WNote::error('response_final_render', "An error was encountered during the final response rendering: ".$e->getMessage(), 'die');
+			WNote::error('final_render_failed', WLang::get('error_final_render_failed', $e->getMessage()), 'die');
 			return false;
 		}
 

@@ -3,7 +3,7 @@
  * WConfig.php
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * WConfig loads all configuration files, manages all configuration values.
@@ -15,6 +15,7 @@ defined('WITYCMS_VERSION') or die('Access denied');
  */
 class WConfig {
 	const APPS_NODE = "apps";
+
 	/**
 	 * @var array Multidimensionnal array containing configurations sorted by type
 	 * 
@@ -94,7 +95,7 @@ class WConfig {
 		
 		$config[$nodes[$i]] = $value;
 		
-		// Notifying configuration modification
+		// Notify configuration modification
 		array_push(self::$modified, $nodes[0]);
 	}
 	
@@ -270,14 +271,13 @@ class WConfig {
 		
 		$db 				= self::$db;
 		$stmt_select = self::$stmt_select;
-		$config 			= self::$configs;
 		
 		//check in temp values
-		if(isset($config[self::APPS_NODE][$app])) {
-			if(isset($config[self::APPS_NODE][$app][$key])) {
-				return is_null($config[self::APPS_NODE][$app][$key])?$default:$config[self::APPS_NODE][$app][$key];
+		if(isset(self::$configs[self::APPS_NODE][$app])) {
+			if(isset(self::$configs[self::APPS_NODE][$app][$key])) {
+				return is_null(self::$configs[self::APPS_NODE][$app][$key])?$default:self::$configs[self::APPS_NODE][$app][$key];
 			} else {
-				self::$config[APPS_NODE][$app][$key] = null;
+				self::$configs[self::APPS_NODE][$app][$key] = null;
 				return $default;
 			}
 		}
@@ -288,14 +288,17 @@ class WConfig {
 		
 		if($stmt_select->rowCount() != 0) {	
 			$result =  $stmt_select->fetchAll();
+			//echo '<pre>';
 			foreach($result as $values) {
 				self::$configs[self::APPS_NODE][$app][$values['key']] = $values['value'];
  			}
+			//print_r(self::$configs[self::APPS_NODE]);			
+			//echo '</pre>';
 		}
 		
-		//if found in the database, we retrun the value
-		if(isset($config[self::APPS_NODE][$app][$key])) {
-			return $config[self::APPS_NODE][$app][$key];
+		//if found in the database, we return the value
+		if(isset(self::$configs[self::APPS_NODE][$app][$key])) {
+			return self::$configs[self::APPS_NODE][$app][$key];
 		}
 		
 		//In case no variable were found, check the manifest
@@ -358,7 +361,7 @@ class WConfig {
 		self::$db = WSystem::getDB();
 		self::$db->declareTable('apps_config');
 		self::$stmt_select = self::$db->prepare('
-			SELECT value,`key`,app FROM apps_config WHERE app = :app');
+			SELECT `value`,`key`,`app` FROM apps_config WHERE app = :app');
 		self::$stmt_update = self::$db->prepare('UPDATE apps_config SET value = :value WHERE id = :id');
 		self::$stmt_add = self::$db->prepare('INSERT INTO apps_config(app, `key`, value) VALUES(:app, :key, :value)');
 	}

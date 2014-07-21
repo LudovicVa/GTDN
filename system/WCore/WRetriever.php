@@ -3,7 +3,7 @@
  * WRetriever.php
  */
 
-defined('WITYCMS_VERSION') or die('Access denied');
+defined('IN_WITY') or die('Access denied');
 
 /**
  * WRetriever is the component to get the model or the view of an action from any WityCMS's application.
@@ -250,10 +250,10 @@ class WRetriever {
 
 				return $controller;
 			} else {
-				return WNote::error('app_structure', "The application \"".$app_code."\" has to have a main class inheriting from WController abstract class.");
+				return WNote::error('app_structure', WLang::get('error_bad_app_structure', $app_code));
 			}
 		} else {
-			return WNote::error(404, WLang::_('error_404'));
+			return WNote::error(404, WLang::get('error_404'));
 		}
 	}
 
