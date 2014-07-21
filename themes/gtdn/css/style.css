@@ -4,7 +4,7 @@
 }
 
 
-.top_menu>li>a:hover, .top_menu>li>a:focus, .top_menu>li.active>a {
+.top_menu>li>a:hover, .top_menu>li>a:focus {
 	border-bottom: 2px solid #453823;
 }
 
@@ -22,8 +22,9 @@
 }
 
 body {
-	font-family:'open sans', sans-serif; 
+	font-family:spinnaker,'open sans', sans-serif; 
 	text-align: justify;
+	color: #767F88;
 }
 
 .footer {
@@ -96,4 +97,20 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	font-family: spinnaker,sans-serif;
 }
 
-
+.btn-primary {
+	color: #fff;
+	background-color: #d2322d;
+	border-color: #ac2925;
+}
+.btn-primary:hover, .btn-primary:focus {
+	color: #fff;
+	background-color: #dd0000;
+	border-color: #dd0000;
+}
+a {
+	color: #d2322d;
+}
+a:hover, a:focus {
+	color: #DD0000;
+	text-decoration:underline;
+}
